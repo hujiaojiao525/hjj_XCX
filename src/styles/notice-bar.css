@@ -1,0 +1,90 @@
+/* notice-bar.css */
+
+@c notice-bar {
+    box-sizing: border-box;
+    padding: 16px;
+    position: relative;
+    background-color: #FFF2BD;
+    color: #FF571A;
+    font-size: 14px;
+    line-height: 17px;
+    overflow: hidden;
+    @d text {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+    @d mr32{
+        margin-right: 32px!important;
+    }
+    @d alarm{
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+    }
+    @d close{
+        width: 16px;
+        height: 16px;
+        background-image: url('https://img.souche.com/f2e/14cc53b184c8038cf4eb6557c232e816.png');
+        background-size: 100% 100%;
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    @d button{
+        color: #FF571A;
+        padding: 8px 10px;
+        box-sizing: border-box;
+        transform: translateY(-50%);
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        &:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px solid #FF571A;
+            box-sizing: border-box;
+            width: 200%;
+            height: 200%;
+            transform: scale(.5);
+            transform-origin: left top;
+            border-radius: 4px;
+        }
+    }
+    @d button-lucency{
+        padding: 0 10px;
+        margin-left: 16px;
+        height: 1px;
+        position: relative;
+        padding-top: 2px;
+        overflow: hidden;
+        box-sizing: border-box;
+        float: right;
+    }
+    @d right-arrow{
+        width: 16px;
+        height: 16px;
+        background-image: url('https://img.souche.com/f2e/d86de87f10a5a28f289e4add6485fd46.png');
+        background-size: 100% 100%;
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+@c notice-bar-alarm{
+    box-sizing: border-box;
+    padding: 16px;
+    position: relative;
+    background-color: #FFEDEB;
+    color: #FF4040;
+    font-size: 14px;
+    line-height: 17px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}

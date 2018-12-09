@@ -1,0 +1,18 @@
+<template name="my$3cae5f6c">
+  <view class="_div data-v-4522e505 my-container">
+    <view class="_section data-v-4522e505 my-top">
+      <view class="_div data-v-4522e505 service icon">
+        <label class="_span data-v-4522e505">客服</label>
+      </view>
+      <view class="_div data-v-4522e505 set icon">
+        <label class="_span data-v-4522e505">设置</label>
+      </view>
+      <view class="_div data-v-4522e505 my-message">
+        <view class="_div data-v-4522e505 head-img"></view>
+        <view class="_div data-v-4522e505 login-mes">未登录</view>
+      </view>
+    </view>
+    <view class="_section data-v-4522e505 my-list"></view>
+    <view class="_div data-v-4522e505 login-btn" bindtap="handleProxy" data-eventid="{{'0'}}" data-comkey="{{$k}}">注册/登录</view>
+  </view>
+</template>

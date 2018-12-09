@@ -1,0 +1,12 @@
+<template name="webview$4d3e2562">
+  <view class="_div data-v-19e60154">
+    <web-view src="{{url}}" bindmessage="handleProxy" data-eventid="{{'0'}}" data-comkey="{{$k}}" class="_web-view data-v-19e60154">url通过参数url传过来
+      <view class="_br data-v-19e60154"></view>
+      <view class="_b data-v-19e60154">注意:</view>
+      <view class="_br data-v-19e60154"></view>需要通过
+      <view class="_b data-v-19e60154">encodeURIComponent()</view>格式化url，
+      <view class="_br data-v-19e60154"></view>url域名需要配置
+      <view class="_b data-v-19e60154">业务域名</view>
+    </web-view>
+  </view>
+</template>

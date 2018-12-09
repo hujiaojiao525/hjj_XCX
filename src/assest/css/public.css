@@ -1,0 +1,24 @@
+.container {
+    height: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+button::after{
+    border: none;
+}
+.button{
+    border:none;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
+.relative{
+    position: relative;
+}

@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/my/main",
+    "pages/example/main",
+    "pages/loginPay/main",
+    "pages/webview/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "小程序",
+    "navigationBarTextStyle": "black"
+  }
+}

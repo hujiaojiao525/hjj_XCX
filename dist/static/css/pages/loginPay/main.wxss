@@ -1,0 +1,29 @@
+
+page {
+  background: #efefef;
+}
+.pay-container {
+  padding: 20rpx;
+}
+.pay-logo {
+  width: 100%;
+  height: 300rpx;
+  margin-bottom: 50rpx;
+  background: #795da3;
+}
+.login-pay ._div {
+  width: 90%;
+  margin: 0 auto 20rpx auto;
+  height: 88rpx;
+  text-align: center;
+  line-height: 88rpx;
+  font-size: 28rpx;
+  color: #fff;
+  border-radius: 10rpx;
+}
+.wx-login {
+  background: #008000;
+}
+.phone-login {
+  background: #0086b3;
+}

@@ -1,0 +1,1 @@
+<import src="../../components/loginPay$d0a38a82" /><template is="loginPay$d0a38a82" data="{{ ...$root['0'], $root }}"/>

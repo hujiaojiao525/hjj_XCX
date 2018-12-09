@@ -1,0 +1,9 @@
+<template name="loginPay$d0a38a82">
+  <view class="_div data-v-98f72cd0 pay-container">
+    <view class="_div data-v-98f72cd0 pay-logo"></view>
+    <view class="_div data-v-98f72cd0 login-pay">
+      <view class="_div data-v-98f72cd0 wx-login">微信用户快速登录</view>
+      <view class="_div data-v-98f72cd0 phone-login">输入手机号注册登录</view>
+    </view>
+  </view>
+</template>

@@ -1,0 +1,6 @@
+<template name="example$38112d00">
+  <view class="_div data-v-04b908f2 container">
+    <view class="_h1 data-v-04b908f2">小程序模板</view>
+    <view class="_p data-v-04b908f2"> utils里面有一些公共方法，做项目前先看一下 </view>
+  </view>
+</template>
