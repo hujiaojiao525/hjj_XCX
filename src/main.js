@@ -10,13 +10,15 @@ app.$mount()
 export default {
     config: {
         pages: [
-        	'^pages/my/main',
+            '^pages/indexMap/main',
+        	'pages/my/main',
         	'pages/loginPay/main',
+            'pages/phoneLogin/main',
 		],
 		window: {
             backgroundTextStyle: 'light',
             navigationBarBackgroundColor: '#fff',
-            navigationBarTitleText: '小程序',
+            navigationBarTitleText: '特来电',
             navigationBarTextStyle: 'black'
         },
 	}
