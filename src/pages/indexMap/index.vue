@@ -1,5 +1,5 @@
 <template>
-    <div class="index-map">
+    <div class="index-map" catchtouchmove>
     	<!-- 顶部 -->
         <div class="map-top">
         	<div class="search-box">
@@ -10,6 +10,7 @@
         </div>
         <div class="top-layer" v-show="editPop"></div>
     	<map 
+    		
             id="map" 
             :markers="markers" 
             scale="14"
@@ -17,6 +18,8 @@
             :style="{height: WinHeight+'px'}"
             :latitude="latitude"
             :longitude="longitude"
+            @controltap="controltap"
+            @markertap="markertap"
             @callouttap="goToClass" 
             @end="regionchange"
             @begin="regionchange"
@@ -83,12 +86,7 @@
                 editPop: false,
                 focus: false,
                 WinHeight: '',
-                markers: [{ // 标记点用于在地图上显示标记的位置
-					id: 0,
-					latitude: 23.099994,
-					longitude: 113.324520,
-					name: 'T.I.T 创意园'
-			    }],
+                markers: [],
 			    latitude: '23.099994', // 中心纬度
 			    longitude: '113.324520' , // 中心经度	
 			    bottomHeight: '',
@@ -106,13 +104,35 @@
 	                }
 	            })
             })
-            
-        	
+            wx.getLocation({
+				type: 'wgs84',
+				success(res) {
+					const latitude = res.latitude
+					const longitude = res.longitude
+					const speed = res.speed
+					const accuracy = res.accuracy
+					self.latitude = latitude;
+					self.longitude = longitude;
+					self.markers = [{
+						id: 0,
+						latitude: latitude,
+						longitude: longitude,
+					}]
+				}
+			})
         },
-        scroll(e) {
-            	console.log(e)
-            },
+        
         methods: {
+        	touchmove(event) {
+        		console.log(0)
+        		event.preventDefault()	
+    		},
+        	markertap(e) {
+			    console.log(e)
+			},
+        	controltap(e) {
+        		console.log(e)
+    		},
             goToMy() {
                 wx.navigateTo({
                     url: '/pages/my/main'
@@ -160,6 +180,14 @@
         from {bottom:-279rpx;}
         to {bottom:0px;}
     }
+    page{
+    	position: fixed;
+    	width: 100%;
+    	height: 100%;
+    	left: 0;
+    	top: 0;
+    	overflow: hidden;
+	}
     #map{
     	width:100%;
     	position: relative;
