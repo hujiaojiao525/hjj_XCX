@@ -10,10 +10,11 @@ app.$mount()
 export default {
     config: {
         pages: [
-            '^pages/indexMap/main',
+            '^pages/map/main',
         	'pages/my/main',
         	'pages/loginPay/main',
             'pages/phoneLogin/main',
+
 		],
 		window: {
             backgroundTextStyle: 'light',
