@@ -14,12 +14,13 @@ export default {
         	'pages/my/main',
         	'pages/loginPay/main',
             'pages/phoneLogin/main',
+            // 'pages/screen/main',
 
 		],
 		window: {
             backgroundTextStyle: 'light',
             navigationBarBackgroundColor: '#fff',
-            navigationBarTitleText: '特来电',
+            navigationBarTitleText: '地图组件demo',
             navigationBarTextStyle: 'black'
         },
 	}

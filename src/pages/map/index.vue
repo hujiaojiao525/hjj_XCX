@@ -11,34 +11,48 @@
         <div class="top-layer" v-show="editPop"></div>
     	<map
     		disable-scroll="true"
-            id="map"
-            :markers="markers"
+            id="map" 
+            :markers="markers" 
             scale="14"
             subkey="2AJBZ-GDVWW-CVYRV-O5UML-R66UK-GEFRL"
             :style="{height: WinHeight+'px'}"
+            :latitude="latitude"
+            :longitude="longitude"
+            @controltap="controltap"
+            @markertap="markertap"
+            @callouttap="goToClass" 
+            @end="regionchange"
+            @begin="regionchange"
+            @regionchange="regionchange"
+            show-location
             >
-            <!-- 编辑 -->
+            <cover-view class="map-mes">
 
-
-
-            <cover-view class="first-img" @tap="editFun">
+            </cover-view>
+            <cover-view class="edit-img" @tap="editFun">
                 <cover-image class="img" src="../../static/image/editImg.png"/>
             </cover-view>
-            <cover-view class="two-img" @tap="editFun">
+            <cover-view class="screen-img" @tap="">
                 <cover-image class="img" src="../../static/image/screen.png"/>
             </cover-view>
-            <cover-view class="there-img" @tap="editFun">
+            <cover-view class="again-img" v-show="!editPop" @tap="againPos">
                 <cover-image class="img" src="../../static/image/posImg.png"/>
             </cover-view>
-            <cover-view class="four-img" @tap="editFun">
+            <cover-view class="my-img" v-show="!editPop" @tap="goToMy">
                 <cover-image class="img" src="../../static/image/myImg.png"/>
             </cover-view>
-            <cover-view class="sweep-box">
+            <cover-view class="sweep-box" v-show="!editPop">
                 <cover-image class="img" src="../../static/image/sweepCode.png"/>
                 <cover-view class="text">扫码充电</cover-view>
             </cover-view>
+            <cover-view class="layer" v-show="editPop"></cover-view>
         </map>
-
+        <div class="edit-pop"  v-show="editPop" :class="{editLayer: editPop}">
+            <image @click="closePop" class="close-btn" src="../../static/image/close.png"></image>
+            <div class="edit-title">输入终端编号充电</div>
+            <div class="edit-mes">终端编号位于充电终端二维码标签处，输入终端编号开启充电</div>
+            <input type="text" :focus="focus" class="edit-input" placeholder="清输入终端编号开启充电">
+        </div>
     </div>
 </template>
 
@@ -51,27 +65,46 @@
                 WinHeight: '',
                 markers: [],
                 latitude: '23.099994', // 中心纬度
-                longitude: '113.324520', // 中心经度
+                longitude: '113.324520' , // 中心经度   
                 bottomHeight: '',
                 mapCtx: null,
             }
         },
         mounted(){
             const self = this;
-            wx.getSystemInfo({
-                success: function(res) {
-                    self.WinHeight = res.windowHeight
-                }
+            var query = wx.createSelectorQuery()
+            query.select('.map-top').boundingClientRect()
+            query.exec(function (hei) {
+                wx.getSystemInfo({
+                    success: function(res) {
+                        console.log(hei[0].height)
+                        self.WinHeight = res.windowHeight - hei[0].height
+                    }
+                })
             })
-        },
-
-        moveToLocation() {
-
+            this.currentPos();
+            
         },
         onReady: function (e) {
             this.mapCtx = wx.createMapContext('map')
         },
         methods: {
+            // 重新定位
+            againPos() {
+                // moveToLocation
+                var that = this;
+                that.mapCtx.moveToLocation({
+                    success: function(res) {
+                    // 通过获取的经纬度进行请求数据
+                        that.markers = [{
+                            id: 0,
+                            latitude: res.latitude,
+                            longitude: res.longitude,
+                        }]
+                    }
+                })
+                this.currentPos();
+            },
             // 定位到当前位置
             currentPos() {
                 const self = this;
@@ -88,7 +121,69 @@
                             longitude: res.longitude,
                         }]
                     }
+                })  
+            },
+            regionchange(e) {
+                if (e.type == 'end') {
+                    this.getLngLat();
+                }
+            },
+
+            getLngLat: function() {
+                var that = this;
+                that.mapCtx.getCenterLocation({
+                    success: function(res) {
+                    // 通过获取的经纬度进行请求数据
+                        that.markers = [{
+                            id: 0,
+                            latitude: res.latitude,
+                            longitude: res.longitude,
+                        }]
+                        // that.mapCtx.moveToLocation()
+                    }
                 })
+            },
+            touchmove(event) {
+                console.log(0)
+                event.preventDefault()  
+            },
+            markertap(e) {
+                console.log(e)
+            },
+            controltap(e) {
+                console.log(e)
+            },
+            goToMy() {
+                wx.navigateTo({
+                    url: '/pages/my/main'
+                })
+            },
+
+            // 编辑
+            editFun() {
+                const self = this;
+                self.editPop = true;
+                setTimeout(function() {
+                    var query = wx.createSelectorQuery()
+                    query.select('.edit-pop').boundingClientRect()
+                    query.exec(function (hei) {
+                        console.log(hei[0].height)
+                        self.bottomHeight = hei[0].height
+                        self.WinHeight = self.WinHeight -  hei[0].height
+                        
+                    })
+                }, 50)
+                setTimeout(function() {
+                    self.focus = true;
+                }, 60)
+                
+            },
+            // 关闭弹窗
+            closePop() {
+                const self = this;
+                self.editPop = false;
+                self.focus = false;
+                self.WinHeight = self.WinHeight + self.bottomHeight
             },
         },
     };
@@ -99,48 +194,19 @@
         width: 100%;
     }
     #map{
-        width: 100%;
-        position: fixed;
-        top: 55px;
-        left:0;
+        width: 100%; 
     }
-    .controls {
-        padding-left:42px;
-        position:relative;
-        top:50%;
-        display:flex;
-        box-sizing:border-box;
-
+    .map-mes{
+        background: #fff;
+        padding: 20rpx;
+        width: 300rpx;
     }
-    .play,
-    .pause,
-    .time {
-        flex: 1;
-        height: 100%;
-    }
-    .img {
-        width: 40rpx;
-        height: 40rpx;
-        vertical-align: middle;
-        margin:16rpx auto;
-    }
-    /*.list-img{*/
-        /*width: 72rpx;*/
-        /*height: 72rpx;*/
-        /*background: #fff;*/
-        /*border-radius: 100%;*/
-        /*text-align: center;*/
-        /*margin-bottom: 30rpx;*/
-        /*line-height: 62rpx;*/
-    /*}*/
     .map-top{
         padding: 15rpx;
         background: #0086b3;
         box-sizing: border-box;
-        width: 100%;
-        position: fixed;
-        left:0;
-        top:0;
+        width: 100%; 
+        position: relative;
     }
     .map-text{
         position: relative;
@@ -186,42 +252,29 @@
         margin-top: -25rpx;
 
     }
-    /*.map-box{*/
-        /*width: 100%;*/
-        /*height:450rpx;*/
-        /*margin-top: 500rpx;*/
-        /*margin-left: 0;*/
-    /*}*/
-    /*.left-img{*/
-        /*width: 100rpx;*/
-    /*}*/
-    /*.right-img{*/
-        /*width: 100rpx;*/
-    /*}*/
-    .first-img, .two-img, .there-img, .four-img{
+    .edit-img, .screen-img, .again-img, .my-img{
         width: 72rpx;
         height: 72rpx;
         background: #fff;
-
         border-radius: 100%;
         text-align: center;
         margin-bottom: 30rpx;
         line-height: 62rpx;
         margin-left:100rpx;
     }
-    .first-img{
+    .edit-img{
         margin-top: 650rpx;
     }
-    .four-img{
+    .img {
+        width: 40rpx;
+        height: 40rpx;
+        vertical-align: middle;
+        margin:16rpx auto;
+    }
+    .my-img{
         margin-left: 600rpx;
         margin-top: -100rpx;
     }
-    /*.img-box .img{*/
-        /*width: 40rpx;*/
-        /*height: 40rpx;*/
-        /*vertical-align: middle;*/
-        /*margin:16rpx auto;*/
-    /*}*/
     .sweep-box{
         background: #538EEB;
         width: 170rpx;
@@ -243,51 +296,51 @@
         margin-top: 25rpx;
         font-size: 14px;
     }
-    /*.layer{*/
-        /*background: rgba(0,0,0,.6);*/
-        /*position: absolute;*/
-        /*width: 100%;*/
-        /*height: 100%;*/
-        /*left:0;*/
-        /*top:0;*/
-        /*z-index:5;*/
-    /*}*/
-    /*.edit-pop{*/
-        /*width: 100%;*/
-        /*position: relative;*/
-        /*box-sizing: border-box;*/
-        /*left:0;*/
-        /*bottom:0;*/
-        /*z-index:15;*/
-        /*background: #efefef;*/
-    /*}*/
-    /*.close-btn{*/
-        /*position: absolute;*/
-        /*top: 15rpx;*/
-        /*right:20rpx;*/
-        /*width: 30rpx;*/
-        /*height:30rpx;*/
-    /*}*/
-    /*.edit-title{*/
-        /*font-size: 16px;*/
-        /*color: #1a1a1a;*/
-        /*line-height: 80rpx;*/
-        /*text-align: center;*/
-    /*}*/
-    /*.edit-mes{*/
-        /*font-size: 12px;*/
-        /*color: #666;*/
-        /*margin-bottom: 30rpx;*/
-        /*text-align: center;*/
-    /*}*/
-    /*.edit-input{*/
-        /*height:140rpx;*/
-        /*background: #fff;*/
-        /*border-top:1rpx solid #ddd;*/
-        /*font-size: 16px;*/
-        /*padding-left: 100rpx;*/
-    /*}*/
-    /*.editLayer{*/
-        /*animation: mymove .5s;*/
-    /*}*/
+    .edit-pop{
+        width: 100%;
+        position: fixed;
+        box-sizing: border-box;
+        left:0;
+        bottom:0;
+        z-index:15;
+        background: #efefef;
+    }
+    .close-btn{
+        position: absolute;
+        top: 20rpx;
+        right:20rpx;
+        width: 40rpx;
+        height:40rpx;
+    }
+    .edit-title{
+        font-size: 16px;
+        color: #1a1a1a;
+        line-height: 80rpx;
+        text-align: center;
+    }
+    .layer{
+        background: rgba(0,0,0,.6);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left:0;
+        top:0;
+        z-index:5;
+    }
+    .edit-mes{
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 30rpx;
+        text-align: center;
+    }
+    .edit-input{
+        height:140rpx;
+        background: #fff;
+        border-top:1rpx solid #ddd;
+        font-size: 16px;
+        padding-left: 100rpx;
+    }
+    .editLayer{
+        animation: mymove .5s;
+    }
 </style>

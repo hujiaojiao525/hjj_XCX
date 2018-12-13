@@ -96,18 +96,18 @@
         mounted(){
         	const self = this;
         	var query = wx.createSelectorQuery()
-            wx.getSystemInfo({
+            query.select('.map-top').boundingClientRect()
+            query.exec(function (hei) {
+	            wx.getSystemInfo({
 	                success: function(res) {
-	                    self.WinHeight = res.windowHeight  - 20
+	                	console.log(hei[0].height)
+	                    self.WinHeight = res.windowHeight - hei[0].height
 	                }
 	            })
+            })
             this.currentPos();
             
         },
-        
-		moveToLocation() {
-
-		},
 		onReady: function (e) {
 			this.mapCtx = wx.createMapContext('map')
 		},
