@@ -32,7 +32,53 @@
 								<p><span>快0/0</span><span>慢0/0</span></p>
 							</div>
 							<div class="it-p">
-								当前元没读（含服务费）
+								当前<span>2388.0</span>元/度（含服务费）
+							</div>
+							<div class="it-s">
+								<p><span v-for="item in stars">{{item}}</span></p>
+								<span>最近充电</span>
+								<span>朝阳区1.38km</span>
+							</div>
+						</div>
+					</div>
+					<div class="item-f">
+						<span>个人共享</span><span>个享</span><span>个人共</span>
+					</div>
+				</div>
+
+				<div class="list-item">
+					<div class="item-t">
+						<image src="http://g.hiphotos.baidu.com/image/pic/item/5bafa40f4bfbfbed5572eb3875f0f736afc31f4a.jpg"></image>
+						<div class="item-r">
+							<div class="it-n">
+								<span>回复康师傅</span>
+								<p><span>快0/0</span><span>慢0/0</span></p>
+							</div>
+							<div class="it-p">
+								当前<span>2388.0</span>元/度（含服务费）
+							</div>
+							<div class="it-s">
+								<p><span v-for="item in stars">{{item}}</span></p>
+								<span>最近充电</span>
+								<span>朝阳区1.38km</span>
+							</div>
+						</div>
+					</div>
+					<div class="item-f">
+						<span>个人共享</span><span>个享</span><span>个人共</span>
+					</div>
+				</div>
+
+				<div class="list-item">
+					<div class="item-t">
+						<image src="http://g.hiphotos.baidu.com/image/pic/item/5bafa40f4bfbfbed5572eb3875f0f736afc31f4a.jpg"></image>
+						<div class="item-r">
+							<div class="it-n">
+								<span>回复康师傅</span>
+								<p><span>快0/0</span><span>慢0/0</span></p>
+							</div>
+							<div class="it-p">
+								当前<span>2388.0</span>元/度（含服务费）
 							</div>
 							<div class="it-s">
 								<p><span v-for="item in stars">{{item}}</span></p>
@@ -156,28 +202,17 @@
         from {bottom:-279rpx;}
         to {bottom:0px;}
     }
-	.index-map{
-		-webkit-overflow-scrolling:no;
+	.bus-list{
+		padding-top: 70rpx;
 	}
 	
-    page{
-    	position: fixed;
-    	width: 100%;
-    	height: 100%;
-    	left: 0;
-    	top: 0;
-    	overflow: hidden;
-	}
-    #map{
-    	width:100%;
-    	position: relative;
-	}
     .map-top{
     	padding: 15rpx;
     	background: #0086b3;
     	box-sizing: border-box;
     	width: 100%;
-    	position: relative;
+		top: 0;
+    	position: fixed;
     }
     .search-box{
     	height: 70rpx;
@@ -331,6 +366,9 @@
 		color: #47b0ce;
 		margin-right: 20rpx;
 		border-radius: 6rpx;
+	}
+	.it-p span{
+		color: #e08c70;
 	}
 
 
