@@ -180,6 +180,10 @@
         from {bottom:-279rpx;}
         to {bottom:0px;}
     }
+	.index-map{
+		-webkit-overflow-scrolling:no;
+	}
+	
     page{
     	position: fixed;
     	width: 100%;
