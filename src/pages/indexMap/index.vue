@@ -1,5 +1,5 @@
 <template>
-    <div class="index-map" catchtouchmove>
+    <div class="index-map">
     	<!-- 顶部 -->
         <div class="map-top">
         	<div class="search-box">
@@ -10,7 +10,7 @@
         </div>
         <div class="top-layer" v-show="editPop"></div>
     	<map 
-    		
+    		disable-scroll="true"
             id="map" 
             :markers="markers" 
             scale="14"
@@ -36,7 +36,7 @@
 	        			<cover-image class="img" src="../../static/image/screen.png"/>
 	        		</cover-view>
 	        		<!-- 定位 -->
-	        		<cover-view class="img-box">
+	        		<cover-view class="img-box" @tap="againPos">
 	        			<cover-image class="img" src="../../static/image/posImg.png"/>
 	        		</cover-view>
 		        	</cover-view>
@@ -90,6 +90,7 @@
 			    latitude: '23.099994', // 中心纬度
 			    longitude: '113.324520' , // 中心经度	
 			    bottomHeight: '',
+			    mapCtx: null,
             }
         },
         mounted(){
@@ -97,32 +98,62 @@
         	var query = wx.createSelectorQuery()
             query.select('.map-top').boundingClientRect()
             query.exec(function (hei) {
-                wx.getSystemInfo({ //是否为iphoneX
+	            wx.getSystemInfo({
 	                success: function(res) {
 	                	console.log(hei[0].height)
 	                    self.WinHeight = res.windowHeight - hei[0].height
 	                }
 	            })
             })
-            wx.getLocation({
-				type: 'wgs84',
-				success(res) {
-					const latitude = res.latitude
-					const longitude = res.longitude
-					const speed = res.speed
-					const accuracy = res.accuracy
-					self.latitude = latitude;
-					self.longitude = longitude;
-					self.markers = [{
-						id: 0,
-						latitude: latitude,
-						longitude: longitude,
-					}]
-				}
-			})
+            this.currentPos();
+            
         },
-        
+		onReady: function (e) {
+			this.mapCtx = wx.createMapContext('map')
+		},
         methods: {
+        	// 重新定位
+        	againPos() {
+        		this.currentPos();
+    		},
+    		// 定位到当前位置
+    		currentPos() {
+    			const self = this;
+    			wx.getLocation({
+				type: 'wgs84',
+					success(res) {
+						const speed = res.speed
+						const accuracy = res.accuracy
+						self.latitude = res.latitude;
+						self.longitude = res.longitude;
+						self.markers = [{
+							id: 0,
+							latitude: res.latitude,
+							longitude: res.longitude,
+						}]
+					}
+				})	
+			},
+			regionchange(e) {
+				if (e.type == 'end') {
+					this.getLngLat();
+			    }
+			},
+			getLngLat: function() {
+				var that = this;
+				that.mapCtx.getCenterLocation({
+					success: function(res) {
+						let curLatitude = res.latitude;
+						let curLongitude = res.longitude;
+						// 通过获取的经纬度进行请求数据
+						let data = {
+							'gisX': curLongitude,
+							'gisY': curLatitude
+						};
+						// that.mapCtx.moveToLocation()
+					}
+				})
+			},
         	touchmove(event) {
         		console.log(0)
         		event.preventDefault()	
@@ -180,6 +211,7 @@
         from {bottom:-279rpx;}
         to {bottom:0px;}
     }
+<<<<<<< HEAD
 	.index-map{
 		-webkit-overflow-scrolling:no;
 	}
@@ -188,9 +220,17 @@
     	position: fixed;
     	width: 100%;
     	height: 100%;
+=======
+    .index-map{
+    	position: absolute;
+>>>>>>> a44c98544d85b0b677831b783e3a48a8422a8bc7
     	left: 0;
     	top: 0;
-    	overflow: hidden;
+    	right: 0;
+    	bottom: 0;
+	}
+	page{
+		width: 100%;
 	}
     #map{
     	width:100%;
