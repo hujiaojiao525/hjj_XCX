@@ -1,5 +1,5 @@
 <template>
-    <div class="bus-list" catchtouchmove>
+    <div class="bus-list">
     	<!-- 顶部 -->
         <div class="map-top">
         	<div class="search-box">
@@ -93,7 +93,7 @@
 				</div>
 
 			</div>
-			
+
 		</div>
 
     </div>
@@ -109,7 +109,7 @@
                 WinHeight: '',
                 markers: [],
 			    latitude: '23.099994', // 中心纬度
-			    longitude: '113.324520' , // 中心经度	
+			    longitude: '113.324520' , // 中心经度
 				bottomHeight: '',
 				stars: [1,2,3,4,5]
             }
@@ -143,11 +143,11 @@
 				}
 			})
         },
-        
+
         methods: {
         	touchmove(event) {
         		console.log(0)
-        		event.preventDefault()	
+        		event.preventDefault()
     		},
         	markertap(e) {
 			    console.log(e)
@@ -172,13 +172,13 @@
 		                console.log(hei[0].height)
 		                self.bottomHeight = hei[0].height
 		                self.WinHeight = self.WinHeight -  hei[0].height
-		                
+
 		            })
             	}, 50)
             	setTimeout(function() {
             		self.focus = true;
             	}, 60)
-            	
+
             },
             // 关闭弹窗
             closePop() {
@@ -205,7 +205,7 @@
 	.bus-list{
 		padding-top: 70rpx;
 	}
-	
+
     .map-top{
     	padding: 15rpx;
     	background: #0086b3;
@@ -258,6 +258,7 @@
     .list-wrap{
 		width: 100%;
 		background: #f4f4f4;
+        margin-top: 44rpx;
 	}
 	.choose{
 		display: flex;
@@ -316,7 +317,7 @@
 		background: #eaeaea;
 	}
 	.list-inner{
-		border-top: 1rpx solid transparent; 
+		border-top: 1rpx solid transparent;
 	}
 	.list-item{
 		width: 100%;padding: 20rpx 30rpx;
@@ -348,7 +349,7 @@
 		justify-content: space-between;
 	}
 	.it-s p span{
-		
+
 	}
 	.item-f{
 		height: 88rpx;
@@ -360,7 +361,6 @@
 		align-items: center;
 	}
 	.item-f span{
-		height: 6orpx;
 		padding: 0 16rpx;
 		border: 1rpx solid #47b0ce;
 		color: #47b0ce;
