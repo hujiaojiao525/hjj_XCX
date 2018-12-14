@@ -15,7 +15,6 @@ export default {
         	'pages/loginPay/main',
             'pages/phoneLogin/main',
             // 'pages/screen/main',
-
 		],
 		window: {
             backgroundTextStyle: 'light',

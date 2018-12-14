@@ -211,7 +211,7 @@
         from {bottom:-279rpx;}
         to {bottom:0px;}
     }
-    .index-map{
+	.index-map{
     	position: absolute;
     	left: 0;
     	top: 0;
