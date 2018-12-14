@@ -211,19 +211,8 @@
         from {bottom:-279rpx;}
         to {bottom:0px;}
     }
-<<<<<<< HEAD
 	.index-map{
-		-webkit-overflow-scrolling:no;
-	}
-	
-    page{
-    	position: fixed;
-    	width: 100%;
-    	height: 100%;
-=======
-    .index-map{
     	position: absolute;
->>>>>>> a44c98544d85b0b677831b783e3a48a8422a8bc7
     	left: 0;
     	top: 0;
     	right: 0;
