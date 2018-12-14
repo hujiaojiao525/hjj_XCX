@@ -16,6 +16,7 @@ export default {
             'pages/phoneLogin/main',
             'pages/busList/main',
             'pages/screen/main',
+            'pages/recharge/main',
 		],
 		window: {
             backgroundTextStyle: 'light',

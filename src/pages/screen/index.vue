@@ -3,9 +3,9 @@
         <div class="screen-list">
         	<h2>电站类型</h2>
         	<ul class="each-list">
-        		<li v-for="(item,index) in matchType" :key="index" :class="{choose: matchTypeVal === item.type}" @click="matchChooseFun(item.type)">{{item.label}}</li>
+        		<li v-for="(item,index) in powerType" :key="index" :class="{choose: powerArr[index]}" @click="powerChooseFun(index)">{{item.label}}</li>
         	</ul>
-        	<h2>只能地锁</h2>
+        	<!-- <h2>只能地锁</h2>
         	<ul class="each-list">
         		<li v-for="(item,index) in timeType" :key="index"  :class="{choose: timeTypeVal === item.type, selectOne: item.type === 1, selectThree: item.type === 2, selectSix: item.type === 3}" @click="timeChooseFun(item.type)">{{item.label}}</li>
         	</ul>
@@ -44,13 +44,13 @@
         	<h2>电压</h2>
         	<ul class="each-list">
         		<li class="no-bottom" v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
+        	</ul> -->
         </div>
         <div class="screent-bottom">
-        	<button  id="recommendBtn" class="button reset">
+        	<button  @click="resetFun" class="button reset">
                 重置
             </button>
-             <button id="recommendBtn" class="button finish">
+             <button @click="finishFun" class="button finish">
                 完成
             </button>
         </div>
@@ -62,38 +62,47 @@
         store,
         data() {
             return {
-            	matchType: [
-                    {label:'不限', type: 0},
-                    {label:'精准匹配', type: 1},
-                    {label:'模糊匹配', type: 2},
-                ],
-            	timeType: [
-                    {label:'不限', type: 0},
-                    {label:'最近1个月', type: 1},
-                    {label:'最近3个月', type: 2},
-                    {label:'最近6个月', type: 3},
-                ],
-            	sort: [
-                    {label:'不限', type: 0},
-                    {label:'由高至低', type: 1},
-                    {label:'由低至高', type: 2},
+            	powerType: [
+                    {label:'不限'},
+                    {label:'精准匹配'},
+                    {label:'模糊匹配'},
                 ],
                 matchTypeVal: 0,
                 timeTypeVal: 0,
                 sortTypeVal: 0,
-                qqmapsdk: null,
-                currentCity: '',
-                searchForm: '',
-
+                powerArr: [],
+                powerValArr: [],
             };
         },
         onShow() {
+            this.initArr();
             
         },
         onUnload() {
             
         },
-        methods: {}
+        methods: {
+            initArr() {
+                for(let i = 0;i<this.powerType.length;i++) {
+                    this.powerArr.push(false);
+                }
+            },
+            powerChooseFun(index) {
+                for(let i = 0;i<this.powerArr.length;i++) {
+                    if (i === index) {this.powerArr[index] ? this.powerArr.splice(index, 1, false) : this.powerArr.splice(index, 1, true)
+                    }
+                }
+            },
+            // 重置
+            resetFun() {
+                console.log('重置')
+                // for(let i = 0;i<this.powerType.length;i++) {
+                //     this.powerArr[i] = false;
+                // }
+                // this.powerArr = [false,false,false];
+                console.log(this.powerValArr)
+            },
+        }
     };
 </script>
 

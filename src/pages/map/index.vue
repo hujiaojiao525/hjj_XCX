@@ -11,8 +11,8 @@
         <div class="top-layer" v-show="editPop"></div>
     	<map
     		disable-scroll="true"
-            id="map" 
-            :markers="markers" 
+            id="map"
+            :markers="markers"
             scale="14"
             subkey="2AJBZ-GDVWW-CVYRV-O5UML-R66UK-GEFRL"
             :style="{height: WinHeight+'px'}"
@@ -20,7 +20,7 @@
             :longitude="longitude"
             @controltap="controltap"
             @markertap="markertap"
-            @callouttap="goToClass" 
+            @callouttap="goToClass"
             @end="regionchange"
             @begin="regionchange"
             @regionchange="regionchange"
@@ -41,7 +41,7 @@
             <cover-view class="my-img" v-show="!editPop" @tap="goToMy">
                 <cover-image class="img" src="../../static/image/myImg.png"/>
             </cover-view>
-            <cover-view class="sweep-box" v-show="!editPop">
+            <cover-view class="sweep-box" @tap="scanFun" v-show="!editPop">
                 <cover-image class="img" src="../../static/image/sweepCode.png"/>
                 <cover-view class="text">扫码充电</cover-view>
             </cover-view>
@@ -65,7 +65,7 @@
                 WinHeight: '',
                 markers: [],
                 latitude: '23.099994', // 中心纬度
-                longitude: '113.324520' , // 中心经度   
+                longitude: '113.324520' , // 中心经度
                 bottomHeight: '',
                 mapCtx: null,
             }
@@ -83,15 +83,22 @@
                 })
             })
             this.currentPos();
-            
+
         },
         onReady: function (e) {
             this.mapCtx = wx.createMapContext('map')
         },
         methods: {
+            // 扫一扫
+            scanFun() {
+                wx.scanCode({
+                    success(res) {
+                        console.log(res)
+                    }
+                })
+            },
             // 重新定位
             againPos() {
-                // moveToLocation
                 var that = this;
                 that.mapCtx.moveToLocation({
                     success: function(res) {
@@ -121,7 +128,7 @@
                             longitude: res.longitude,
                         }]
                     }
-                })  
+                })
             },
             regionchange(e) {
                 if (e.type == 'end') {
@@ -145,7 +152,7 @@
             },
             touchmove(event) {
                 console.log(0)
-                event.preventDefault()  
+                event.preventDefault()
             },
             markertap(e) {
                 console.log(e)
@@ -170,13 +177,13 @@
                         console.log(hei[0].height)
                         self.bottomHeight = hei[0].height
                         self.WinHeight = self.WinHeight -  hei[0].height
-                        
+
                     })
                 }, 50)
                 setTimeout(function() {
                     self.focus = true;
                 }, 60)
-                
+
             },
             // 关闭弹窗
             closePop() {
@@ -194,7 +201,7 @@
         width: 100%;
     }
     #map{
-        width: 100%; 
+        width: 100%;
     }
     .map-mes{
         background: #fff;
@@ -205,7 +212,7 @@
         padding: 15rpx;
         background: #0086b3;
         box-sizing: border-box;
-        width: 100%; 
+        width: 100%;
         position: relative;
     }
     .map-text{
