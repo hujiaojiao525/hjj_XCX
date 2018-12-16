@@ -2,11 +2,11 @@
     <div class="index-map">
         <!-- 顶部 -->
         <div class="map-top">
-            <div class="search-box">
+            <div class="search-box" @click="goToSearch">
                 <image class="search-img" src="../../static/image/search.png"></image>
                 <input class="search-input" type="text" placeholder="输入目的地/电站名" readonly=true>
             </div>
-            <image class="listImg-img" src="../../static/image/listImg.png"></image>
+            <image class="listImg-img" @click="goToList" src="../../static/image/listImg.png"></image>
         </div>
         <div class="top-layer" v-show="editPop"></div>
     	<map
@@ -26,9 +26,8 @@
             @regionchange="regionchange"
             show-location
             >
-            <cover-view class="map-mes">
+            <cover-image class="map-mes" src="../../static/image/indexLeft.png"/>
 
-            </cover-view>
             <cover-view class="edit-img" @tap="editFun">
                 <cover-image class="img" src="../../static/image/editImg.png"/>
             </cover-view>
@@ -89,6 +88,18 @@
             this.mapCtx = wx.createMapContext('map')
         },
         methods: {
+            // 去列表页面
+            goToList() {
+                wx.navigateTo({
+                    url: '/pages/busList/main'
+                })
+            },
+            // 去搜索页面
+            goToSearch() {
+                wx.navigateTo({
+                    url: '/pages/search/main'
+                })
+            },
             // 扫一扫
             scanFun() {
                 wx.scanCode({
@@ -204,9 +215,10 @@
         width: 100%;
     }
     .map-mes{
-        background: #fff;
-        padding: 20rpx;
-        width: 300rpx;
+        width: 135rpx;
+        height: 120rpx;
+        margin: 60rpx 0 0 60rpx;
+        display: none;
     }
     .map-top{
         padding: 15rpx;

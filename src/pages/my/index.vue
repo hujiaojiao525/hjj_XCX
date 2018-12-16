@@ -23,7 +23,7 @@
                 <span class="formLabel">余额</span>
                 <p class="list-right">
                     <span>--<span>元</span></span>
-                    <span class="recharge">充值</span>
+                    <span class="recharge" @click="goToRecharge">充值</span>
                 </p>
             </div>
              <div class="list">
@@ -34,7 +34,7 @@
                     <i class="iconfont icon-jiantou  right"></i>
                 </p>
             </div>
-            <div class="list">
+            <div class="list" @click="goToDetail">
                 <i class="left-icon iconfont icon-my_icon_ordermanage_"></i>
                 <span class="formLabel">我的订单</span>
                 <p class="list-right">
@@ -78,6 +78,16 @@
             goToLogin() {
                 wx.navigateTo({
                     url: '/pages/loginPay/main'
+                })
+            },
+            goToRecharge() {
+                wx.navigateTo({
+                    url: '/pages/recharge/main'
+                })
+            },
+            goToDetail() {
+                wx.navigateTo({
+                    url: '/pages/order/main'
                 })
             },
         },

@@ -2,7 +2,7 @@
     <div class="bus-list">
     	<!-- 顶部 -->
         <div class="map-top">
-        	<div class="search-box">
+        	<div class="search-box" @click="goToSearch">
         		<image class="search-img" src="../../static/image/search.png"></image>
         		<input class="search-input" type="text" placeholder="输入目的地/电站名" readonly=true>
         	</div>
@@ -104,89 +104,20 @@
     export default {
         data() {
             return{
-                editPop: false,
-                focus: false,
-                WinHeight: '',
-                markers: [],
-			    latitude: '23.099994', // 中心纬度
-			    longitude: '113.324520' , // 中心经度
-				bottomHeight: '',
 				stars: [1,2,3,4,5]
             }
         },
         mounted(){
-        	const self = this;
-        	var query = wx.createSelectorQuery()
-            query.select('.map-top').boundingClientRect()
-            query.exec(function (hei) {
-                wx.getSystemInfo({ //是否为iphoneX
-	                success: function(res) {
-	                	console.log(hei[0].height)
-	                    self.WinHeight = res.windowHeight - hei[0].height
-	                }
-	            })
-            })
-            wx.getLocation({
-				type: 'wgs84',
-				success(res) {
-					const latitude = res.latitude
-					const longitude = res.longitude
-					const speed = res.speed
-					const accuracy = res.accuracy
-					self.latitude = latitude;
-					self.longitude = longitude;
-					self.markers = [{
-						id: 0,
-						latitude: latitude,
-						longitude: longitude,
-					}]
-				}
-			})
+
         },
 
         methods: {
-        	touchmove(event) {
-        		console.log(0)
-        		event.preventDefault()
-    		},
-        	markertap(e) {
-			    console.log(e)
-			},
-        	controltap(e) {
-        		console.log(e)
-    		},
-            goToMy() {
+            // 去搜索页面
+            goToSearch() {
                 wx.navigateTo({
-                    url: '/pages/my/main'
+                    url: '/pages/search/main'
                 })
             },
-
-            // 编辑
-            editFun() {
-            	const self = this;
-            	self.editPop = true;
-            	setTimeout(function() {
-            		var query = wx.createSelectorQuery()
-	            	query.select('.edit-pop').boundingClientRect()
-		            query.exec(function (hei) {
-		                console.log(hei[0].height)
-		                self.bottomHeight = hei[0].height
-		                self.WinHeight = self.WinHeight -  hei[0].height
-
-		            })
-            	}, 50)
-            	setTimeout(function() {
-            		self.focus = true;
-            	}, 60)
-
-            },
-            // 关闭弹窗
-            closePop() {
-				const self = this;
-            	self.editPop = false;
-            	self.focus = false;
-            	self.WinHeight = self.WinHeight + self.bottomHeight
-        	},
         },
     };
 </script>

@@ -17,12 +17,15 @@ export default {
             'pages/busList/main',
             'pages/screen/main',
             'pages/recharge/main',
+            'pages/balanceDetail/main',
+            'pages/order/main',
+            'pages/search/main',
 		],
 		window: {
             backgroundTextStyle: 'light',
-            navigationBarBackgroundColor: '#fff',
             navigationBarTitleText: '地图组件demo',
-            navigationBarTextStyle: 'black'
+            "navigationBarBackgroundColor": "#0086b3",
+            "navigationBarTextStyle": "white",
         },
 	}
 }
