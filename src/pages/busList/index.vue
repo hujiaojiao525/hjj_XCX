@@ -35,53 +35,13 @@
 								当前<span>2388.0</span>元/度（含服务费）
 							</div>
 							<div class="it-s">
-								<p><span v-for="item in stars">{{item}}</span></p>
-								<span>最近充电</span>
-								<span>朝阳区1.38km</span>
-							</div>
-						</div>
-					</div>
-					<div class="item-f">
-						<span>个人共享</span><span>个享</span><span>个人共</span>
-					</div>
-				</div>
-
-				<div class="list-item">
-					<div class="item-t">
-						<image src="http://g.hiphotos.baidu.com/image/pic/item/5bafa40f4bfbfbed5572eb3875f0f736afc31f4a.jpg"></image>
-						<div class="item-r">
-							<div class="it-n">
-								<span>回复康师傅</span>
-								<p><span>快0/0</span><span>慢0/0</span></p>
-							</div>
-							<div class="it-p">
-								当前<span>2388.0</span>元/度（含服务费）
-							</div>
-							<div class="it-s">
-								<p><span v-for="item in stars">{{item}}</span></p>
-								<span>最近充电</span>
-								<span>朝阳区1.38km</span>
-							</div>
-						</div>
-					</div>
-					<div class="item-f">
-						<span>个人共享</span><span>个享</span><span>个人共</span>
-					</div>
-				</div>
-
-				<div class="list-item">
-					<div class="item-t">
-						<image src="http://g.hiphotos.baidu.com/image/pic/item/5bafa40f4bfbfbed5572eb3875f0f736afc31f4a.jpg"></image>
-						<div class="item-r">
-							<div class="it-n">
-								<span>回复康师傅</span>
-								<p><span>快0/0</span><span>慢0/0</span></p>
-							</div>
-							<div class="it-p">
-								当前<span>2388.0</span>元/度（含服务费）
-							</div>
-							<div class="it-s">
-								<p><span v-for="item in stars">{{item}}</span></p>
+								<p>
+								<span
+									class="star"
+									:class="{star_on: item<=score}"
+									v-for="item in stars"
+									:key="item"></span>
+								</p>
 								<span>最近充电</span>
 								<span>朝阳区1.38km</span>
 							</div>
@@ -104,7 +64,15 @@
     export default {
         data() {
             return{
-				stars: [1,2,3,4,5]
+                editPop: false,
+                focus: false,
+                WinHeight: '',
+                markers: [],
+			    latitude: '23.099994', // 中心纬度
+			    longitude: '113.324520' , // 中心经度
+				bottomHeight: '',
+				stars: [1,2,3,4,5],
+				score: 3
             }
         },
         mounted(){
@@ -279,8 +247,25 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	.it-s p span{
+	.it-s p{
+		display: -webkit-flex;
+		display: flex;
+		align-items: center;
+	}
 
+	.it-s p .star{
+		width: 24rpx;
+		height: 24rpx;
+		background: url(https://github.com/hujiaojiao525/hjj_XCX/blob/master/static/image/s.png?raw=true) no-repeat center;
+		background-size: 12px;
+		margin-right: 3px;
+	}
+	.it-s p .star_on{
+		width: 24rpx;
+		height: 24rpx;
+		background: url(https://github.com/hujiaojiao525/hjj_XCX/blob/master/static/image/s_on.png?raw=true) no-repeat center;
+		background-size: 12px;
+		margin-right: 3px;
 	}
 	.item-f{
 		height: 88rpx;
