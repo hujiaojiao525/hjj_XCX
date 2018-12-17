@@ -49,7 +49,7 @@
 
 <style>
     page{
-        background: #efefef;
+        background: #F5F4FA;
     }
     .order-tab{
         height: 100rpx;
@@ -66,11 +66,11 @@
         position: relative;
     }
     .order-tab li.choose{
-        color: #0086b3;
+        color: #47B0CE;
     }
     .tab-line{
         height: 6rpx;
-        background: #0086b3;
+        background: #47B0CE;
         width: 90%;
         position: absolute;
         bottom:0;

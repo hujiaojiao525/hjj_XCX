@@ -222,7 +222,7 @@
     }
     .map-top{
         padding: 15rpx;
-        background: #0086b3;
+        background: #47B0CE;
         box-sizing: border-box;
         width: 100%;
         position: relative;

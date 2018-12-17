@@ -81,7 +81,7 @@
 
 <style>
     page{
-        background: #efefef;
+        background: #F5F4FA;
     }
     .map-top{
         padding: 15rpx;
@@ -152,7 +152,7 @@
         margin-top: -20rpx;
     }
     .his-list li{
-        background: #0086b3;
+        background: #47B0CE;
         padding: 15rpx 28rpx;
         font-size: 30rpx;
         color: #ffffff;

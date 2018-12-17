@@ -24,7 +24,7 @@ export default {
 		window: {
             backgroundTextStyle: 'light',
             navigationBarTitleText: '地图组件demo',
-            "navigationBarBackgroundColor": "#0086b3",
+            "navigationBarBackgroundColor": "#47B0CE",
             "navigationBarTextStyle": "white",
         },
 	}

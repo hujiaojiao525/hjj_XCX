@@ -62,7 +62,7 @@
         justify-content: space-between;*/
     }
     .recharge-list li{
-        width: 330rpx;
+        width: 327rpx;
         height: 100rpx;
         line-height: 100rpx;
         display: inline-block;
@@ -106,7 +106,7 @@
         text-align: center;
         color: #ffffff;
         font-size: 32rpx;
-        background: #0086b3;
+        background: #47B0CE;
         width: 94%;
         margin: 0 auto;
         border-radius: 10rpx;

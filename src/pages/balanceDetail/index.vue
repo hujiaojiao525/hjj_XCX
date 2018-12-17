@@ -113,7 +113,7 @@
 
 <style>
     page{
-        background: #efefef;
+        background: #F5F4FA;
     }
     .balance-screen{
         height: 90rpx;
@@ -182,7 +182,7 @@
         z-index: 0;
     }
     .pay-time p{
-        background: #efefef;
+        background: #F5F4FA;
         color: #666666;
         padding: 0 20rpx;
         font-size: 28rpx;
@@ -218,7 +218,7 @@
         border-radius: 8rpx;
     }
     .screen-box li.choose{
-        background: #0086b3;
+        background: #47B0CE;
         color:#fff;
     }
     .balance-btn{
@@ -238,7 +238,7 @@
         margin-right: 30rpx;
     }
     .balance-sure{
-        background: #0086b3;
+        background: #47B0CE;
         color: #fff;
     }
     .layer{

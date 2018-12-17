@@ -78,7 +78,7 @@
 
 <style lang="stylus">
     page{
-        background: #efefef;
+        background: #F5F4FA;
     }
     button::after {
         border: none;
@@ -90,7 +90,6 @@
         width: 100%;
         height: 300rpx;
         margin-bottom: 50rpx;
-        background: #795da3;
     }
     .login-pay div{
         width: 90%;
@@ -110,7 +109,7 @@
         line-height: 88rpx;
     }
     .phone-login {
-        background: #0086b3;
+        background: #47B0CE;
     }
 
 </style>

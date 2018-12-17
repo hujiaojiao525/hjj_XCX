@@ -97,13 +97,13 @@
 <style lang="stylus">
     @import "../../assest/fonts/iconfont.css";
     page{
-        background: #efefef;
+        background: #F5F4FA;
     }
     .my-top{
         height: 300rpx;
         wdth:100%;
         position: relative;
-        background: #0086b3;
+        background: #47B0CE;
         text-align: center;
         padding-top:70rpx;
         box-sizing: border-box;
@@ -134,7 +134,7 @@
         width: 90%;
         position: fixed;
         height:88rpx;
-        background: #0086b3;
+        background: #47B0CE;
         text-align: center;
         line-height: 88rpx;
         font-size: 28rpx;
@@ -164,7 +164,7 @@
     .list-right span.recharge{
         padding: 10rpx 30rpx;
         color:#fff;
-        background: #0086b3;
+        background: #47B0CE;
         border-radius: 50rpx;
         margin-left: 15rpx;
     }
@@ -188,7 +188,7 @@
     }
     .left-icon{
         font-size: 32rpx;
-        color: #0086b3;
+        color: #47B0CE;
         margin-left:20rpx;
     }
     .list .iconfont{
