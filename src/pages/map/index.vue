@@ -31,7 +31,7 @@
             <cover-view class="edit-img" @tap="editFun">
                 <cover-image class="img" src="../../static/image/editImg.png"/>
             </cover-view>
-            <cover-view class="screen-img" @tap="">
+            <cover-view class="screen-img" @tap="goToScreen">
                 <cover-image class="img" src="../../static/image/screen.png"/>
             </cover-view>
             <cover-view class="again-img" v-show="!editPop" @tap="againPos">
@@ -98,6 +98,12 @@
             goToSearch() {
                 wx.navigateTo({
                     url: '/pages/search/main'
+                })
+            },
+            // 去筛选页面
+            goToScreen() {
+                wx.navigateTo({
+                    url: '/pages/screen/main'
                 })
             },
             // 扫一扫

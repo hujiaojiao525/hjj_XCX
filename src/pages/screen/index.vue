@@ -44,37 +44,39 @@
                 max: 135,
                 step: 15,
                 min: 15
-                
+
             };
         },
         onShow() {
             this.initArr();
-            
+
         },
         onUnload() {
-            
+
         },
         methods: {
-            changing(event) {
-                // console.log(event.mp.detail.value)
+            changeValue(event) {
                 this.finishValue = event.mp.detail.value
                 this.currentValue = event.mp.detail.value;
                 if (event.mp.detail.value === 75) {
                     this.finishValue = 90;
-                    this.currentValue = 90;
                 } else if (event.mp.detail.value === 90) {
                     this.finishValue = 120;
-                    this.currentValue = 120;
                 } else if (event.mp.detail.value === 105) {
                     this.finishValue = 150;
-                    this.currentValue = 150;
                 }else if (event.mp.detail.value === 120) {
                     this.finishValue = 180;
-                    this.currentValue = 180;
                 }else if (event.mp.detail.value === 135) {
                     this.finishValue = 360;
-                    this.currentValue = 360;
                 }
+            },
+            sliderChange(event) {
+                this.changeValue(event)
+                console.log(event.mp.detail.value)
+            },
+            changing(event) {
+                // console.log(event.mp.detail.value)
+                this.changeValue(event)
             },
             initArr() {
                 for(let i = 0;i<this.powerType.length;i++) {
