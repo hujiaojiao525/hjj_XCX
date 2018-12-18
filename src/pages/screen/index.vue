@@ -5,46 +5,13 @@
         	<ul class="each-list">
         		<li v-for="(item,index) in powerType" :key="index" :class="{choose: powerArr[index]}" @click="powerChooseFun(index)">{{item.label}}</li>
         	</ul>
-        	<!-- <h2>只能地锁</h2>
-        	<ul class="each-list">
-        		<li v-for="(item,index) in timeType" :key="index"  :class="{choose: timeTypeVal === item.type, selectOne: item.type === 1, selectThree: item.type === 2, selectSix: item.type === 3}" @click="timeChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>充电方式</h2>
-        	<ul class="each-list">
-        		<li v-for="(item,index) in timeType" :key="index"  :class="{choose: timeTypeVal === item.type, selectOne: item.type === 1, selectThree: item.type === 2, selectSix: item.type === 3}" @click="timeChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>运营类型</h2>
-        	<ul class="each-list">
-        		<li v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>停车场</h2>
-        	<ul class="each-list">
-        		<li v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>停车费</h2>
-        	<ul class="each-list">
-        		<li  v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>电站状态</h2>
-        	<ul class="each-list">
-        		<li  v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>营业时间</h2>
-        	<ul class="each-list">
-        		<li v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>充电接口</h2>
-        	<ul class="each-list">
-        		<li  v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>辅源类型</h2>
-        	<ul class="each-list">
-        		<li  v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul>
-        	<h2>电压</h2>
-        	<ul class="each-list">
-        		<li class="no-bottom" v-for="(item,index) in sort" :key="index"  :class="{choose: sortTypeVal === item.type}" @click="sortChooseFun(item.type)">{{item.label}}</li>
-        	</ul> -->
+            <div class="slider-box">
+                <p>查看最低功率15kW-360kW的充电站(仅适用于直流快充)</p>
+                <div class="slide-content">
+                    <slider class="slider"  activeColor="#47B0CE" @change="sliderChange" @changing="changing" :max="max" :step="step" :value="currentValue" :min="min"/>
+                <span class="show-text"><span v-show="finishValue!=360">{{finishValue}}~</span>360</span>
+                </div>
+            </div>
         </div>
         <div class="screent-bottom">
         	<button  @click="resetFun" class="button reset">
@@ -72,6 +39,12 @@
                 sortTypeVal: 0,
                 powerArr: [],
                 powerValArr: [],
+                currentValue: 30,
+                finishValue: 30,
+                max: 135,
+                step: 15,
+                min: 15
+                
             };
         },
         onShow() {
@@ -82,6 +55,27 @@
             
         },
         methods: {
+            changing(event) {
+                // console.log(event.mp.detail.value)
+                this.finishValue = event.mp.detail.value
+                this.currentValue = event.mp.detail.value;
+                if (event.mp.detail.value === 75) {
+                    this.finishValue = 90;
+                    this.currentValue = 90;
+                } else if (event.mp.detail.value === 90) {
+                    this.finishValue = 120;
+                    this.currentValue = 120;
+                } else if (event.mp.detail.value === 105) {
+                    this.finishValue = 150;
+                    this.currentValue = 150;
+                }else if (event.mp.detail.value === 120) {
+                    this.finishValue = 180;
+                    this.currentValue = 180;
+                }else if (event.mp.detail.value === 135) {
+                    this.finishValue = 360;
+                    this.currentValue = 360;
+                }
+            },
             initArr() {
                 for(let i = 0;i<this.powerType.length;i++) {
                     this.powerArr.push(false);
@@ -101,6 +95,8 @@
                 // }
                 // this.powerArr = [false,false,false];
                 console.log(this.powerValArr)
+                this.currentValue = 15;
+                this.finishValue = 15;
             },
         }
     };
@@ -114,6 +110,21 @@
     button {
         background-color: transparent;
         border-radius :0;
+    }
+    .slider-box p{
+        font-size: 30rpx;
+        color: #1a1a1a;
+    }
+    .slider{
+        width: 480rpx;
+    }
+    .slide-content{
+        display: flex;
+        padding-left: 50rpx;
+    }
+    .show-text{
+        font-size: 28rpx;
+        margin-top: 15rpx;
     }
     .screen-list{
         background: #fff;

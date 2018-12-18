@@ -3,10 +3,11 @@
         <div class="recharge-top">
             <h2 class="recharge-title">充值金额</h2>
             <ul class="recharge-list">
-                <li>100元</li>
-                <li>50元</li>
-                <li>200元</li>
-                <li>1000元</li>
+                <li v-for="(item,index) in moneyType" :key="index"
+                    :class="{choose: item.id === chooseMoneyId}"
+                    @click="chooseSearch(item.id)">
+                    {{item.value}}
+                </li>
             </ul>
         </div>
         <!--金额手动输入-->
@@ -27,7 +28,13 @@
         store,
         data() {
             return {
-
+                moneyType: [
+                    {value: '100元',id: 100},
+                    {value: '50元',id: 50},
+                    {value: '200元',id: 200},
+                    {value: '1000元',id: 1000},
+                ],
+                chooseMoneyId: 100
             };
         },
         onShow() {
@@ -42,6 +49,9 @@
                 wx.navigateTo({
                     url: '/pages/balanceDetail/main'
                 })
+            },
+            chooseSearch(id) {
+                this.chooseMoneyId = id;
             },
         }
     };
@@ -72,6 +82,10 @@
         margin-bottom: 30rpx;
         border-radius: 10rpx;
         color: #666;
+    }
+    .recharge-list li.choose{
+        border-color:#47B0CE;
+        color: #47B0CE;
     }
     .recharge-input{
         height: 110rpx;
