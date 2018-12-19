@@ -1,10 +1,12 @@
 <template>
     <div class="screen">
         <div class="screen-list">
-        	<h2>电站类型</h2>
-        	<ul class="each-list">
-        		<li v-for="(item,index) in powerType" :key="index" :class="{choose: powerArr[index]}" @click="powerChooseFun(index)">{{item.label}}</li>
-        	</ul>
+        	<div v-for="(item,idx) in data" :key="idx">
+                <h2>{{item.title}}</h2>
+                <ul class="each-list">
+                    <li v-for="(val,index) in powerType" :key="index" :class="{choose: powerArr[index]}" @click="powerChooseFun(index)">{{val.label}}</li>
+                </ul>
+            </div>
             <div class="slider-box">
                 <p>查看最低功率15kW-360kW的充电站(仅适用于直流快充)</p>
                 <div class="slide-content">
@@ -43,7 +45,25 @@
                 finishValue: 30,
                 max: 135,
                 step: 15,
-                min: 15
+                min: 15,
+                data: [
+                    {
+                        title: '电站类型',
+                        arr: [
+                            {label:'不限'},
+                            {label:'精准匹配'},
+                            {label:'模糊匹配'},
+                        ]
+                    },
+                    {
+                        title: '电站类型2',
+                        arr: [
+                            {label:'不限'},
+                            {label:'精准匹配'},
+                            {label:'模糊匹配'},
+                        ]
+                    }
+                ]
 
             };
         },
