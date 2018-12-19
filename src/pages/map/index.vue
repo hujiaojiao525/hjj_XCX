@@ -9,8 +9,8 @@
             <image class="listImg-img" @click="goToList" src="../../static/image/listImg.png"></image>
         </div>
         <div class="top-layer" v-show="editPop"></div>
-    	<map
-    		disable-scroll="true"
+        <map
+            disable-scroll="true"
             id="map"
             :markers="markers"
             scale="14"
@@ -21,8 +21,8 @@
             @controltap="controltap"
             @markertap="markertap"
             @callouttap="goToClass"
-            @end="regionchange"
             @begin="regionchange"
+            @end="regionchange"
             @regionchange="regionchange"
             show-location
             >
@@ -56,15 +56,77 @@
 </template>
 
 <script>
+    const requestData = [
+       {
+            id: 1,
+            name: "永州市中心医院",
+            latitude: 39.91469,
+            longitude: 116.40717,
+            iconPath: '/static/image/indexIcon.png',
+            width: 30,
+            height: 34,
+            zIndex: 1,
+            callout:{
+                content:'我是第一个这个气泡',
+                fontSize:14,
+                color:'#000000',
+                bgColor:'#ffffff',
+                padding:8,
+                borderRadius:4,
+                boxShadow:'4px 8px 16px 0 rgba(0)',
+                display:"ALWAYS"
+            }
+        },
+        {
+            id: 2,
+            name: "永州市中医院",
+            latitude: 39.90469,
+            longitude: 116.44717,
+            iconPath: '/static/image/indexElseIcon.png',
+            width: 30,
+            height: 34,
+            zIndex: 2,
+            callout: {
+                content:'我是第二个这个气泡',
+                fontSize:14,
+                color:'#000000',
+                bgColor:'#ffffff',
+                padding:8,
+                borderRadius:4,
+                boxShadow:'4px 8px 16px 0 rgba(0)',
+                display:"BYCLICK"
+            }
+        },
+        {
+            id: 3,
+            name: "永州市中医院",
+            latitude: 39.90469,
+            longitude: 116.44819,
+            iconPath: '/static/image/indexElseIcon.png',
+            width: 30,
+            height: 34,
+            zIndex: 3,
+            callout: {
+                content:'我是第三个这个气泡',
+                fontSize:14,
+                color:'#000000',
+                bgColor:'#ffffff',
+                padding:8,
+                borderRadius:4,
+                boxShadow:'4px 8px 16px 0 rgba(0)',
+                display:"BYCLICK"
+            }
+        }
+    ]
     export default {
         data() {
             return{
                 editPop: false,
                 focus: false,
                 WinHeight: '',
-                markers: [],
-                latitude: '23.099994', // 中心纬度
-                longitude: '113.324520' , // 中心经度
+                latitude: 23.099994,
+                longitude: 113.324520,
+                markers: requestData,
                 bottomHeight: '',
                 mapCtx: null,
             }
@@ -82,12 +144,38 @@
                 })
             })
             this.currentPos();
-
+            
         },
         onReady: function (e) {
             this.mapCtx = wx.createMapContext('map')
         },
         methods: {
+            createMarker(point) {
+                let latitude = point.latitude;
+                let longitude = point.longitude;
+                let marker = {
+                    iconPath: point.iconPath,
+                    id: point.id || 0,
+                    name: point.name || '',
+                    latitude: latitude,
+                    longitude: longitude,
+                    width: 30,
+                    height: 34,
+                    zIndex: point.zIndex,
+                    callout: {
+                        content: point.callout.content,
+                        fontSize: 14,
+                        color:'#000000',
+                        bgColor:'#ffffff',
+                        padding:8,
+                        borderRadius:4,
+                        boxShadow:'4px 8px 16px 0 rgba(0)',
+                        display:"BYCLICK"
+                    }
+                };
+                
+                return marker;
+            },
             // 去列表页面
             goToList() {
                 wx.navigateTo({
@@ -116,15 +204,18 @@
             },
             // 重新定位
             againPos() {
+
                 var that = this;
                 that.mapCtx.moveToLocation({
                     success: function(res) {
                     // 通过获取的经纬度进行请求数据
-                        that.markers = [{
+                        let arr = that.setPos()
+                        arr.push({
                             id: 0,
                             latitude: res.latitude,
                             longitude: res.longitude,
-                        }]
+                        })
+                        that.markers = arr;
                     }
                 })
                 this.currentPos();
@@ -133,19 +224,22 @@
             currentPos() {
                 const self = this;
                 wx.getLocation({
-                type: 'wgs84',
-                    success(res) {
-                        const speed = res.speed
-                        const accuracy = res.accuracy
-                        self.latitude = res.latitude;
-                        self.longitude = res.longitude;
-                        self.markers = [{
-                            id: 0,
-                            latitude: res.latitude,
-                            longitude: res.longitude,
-                        }]
+                    type: 'gcj02',
+                    success: function(res) {
+                        console.log(res);
+                        self.latitude = res.latitude
+                        self.longitude = res.longitude
                     }
                 })
+            },
+            setPos() {
+                let markers = [];
+                for (let item of requestData) {
+                    let marker = this.createMarker(item);
+                    markers.push(marker)
+                }
+                console.log(markers)
+                return markers;
             },
             regionchange(e) {
                 if (e.type == 'end') {
@@ -157,13 +251,16 @@
                 var that = this;
                 that.mapCtx.getCenterLocation({
                     success: function(res) {
-                    // 通过获取的经纬度进行请求数据
-                        that.markers = [{
+                        // 通过获取的经纬度进行请求数据
+                        let arr = that.setPos()
+                        arr.push({
                             id: 0,
                             latitude: res.latitude,
                             longitude: res.longitude,
-                        }]
-                        // that.mapCtx.moveToLocation()
+                        })
+                        that.markers = arr;
+                        //console.log(arr)
+                        //that.mapCtx.moveToLocation()
                     }
                 })
             },
