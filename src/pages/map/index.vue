@@ -44,7 +44,10 @@
                 <cover-view class="text">扫码充电</cover-view>
             </cover-view>
             <cover-view class="layer" v-show="editPop"></cover-view>
-            <cover-view class="toast" v-show="isShowToast">{{toastText}}</cover-view>
+            <cover-image class="map-arrow" src="../../static/image/mapArrow.png">
+
+            </cover-image>
+            <!--<cover-view class="toast" v-show="isShowToast">{{toastText}}</cover-view>-->
         </map>
         <div class="edit-pop" :class="{editLayer: editPop}"  v-show="editPop" >
             <image @click="closePop" class="close-btn" src="../../static/image/close.png"></image>
@@ -130,7 +133,8 @@
                 bottomHeight: '',
                 mapCtx: null,
                 isShowToast: true,
-                toastText: '位于居中位置'
+                toastText: '位于居中位置',
+                obj: {}
             }
         },
         mounted(){
@@ -146,7 +150,7 @@
                 })
             })
             this.currentPos();
-            
+
         },
         onReady: function (e) {
             this.mapCtx = wx.createMapContext('map')
@@ -175,7 +179,7 @@
                         display:"BYCLICK"
                     }
                 };
-                
+
                 return marker;
             },
             // 去列表页面
@@ -212,15 +216,10 @@
                     success: function(res) {
                     // 通过获取的经纬度进行请求数据
                         let arr = that.setPos()
-                        arr.push({
-                            id: 0,
-                            latitude: res.latitude,
-                            longitude: res.longitude,
-                        })
                         that.markers = arr;
                     }
                 })
-                this.currentPos();
+                //this.currentPos();
             },
             // 定位到当前位置
             currentPos() {
@@ -240,12 +239,12 @@
                     let marker = this.createMarker(item);
                     markers.push(marker)
                 }
-                console.log(markers)
                 return markers;
             },
             regionchange(e) {
                 if (e.type == 'end') {
                     this.getLngLat();
+
                 }
             },
 
@@ -253,16 +252,45 @@
                 var that = this;
                 that.mapCtx.getCenterLocation({
                     success: function(res) {
+                        console.log(1)
                         // 通过获取的经纬度进行请求数据
-                        let arr = that.setPos()
-                        arr.push({
-                            id: 0,
-                            latitude: res.latitude,
-                            longitude: res.longitude,
-                        })
-                        that.markers = arr;
-                        //console.log(arr)
-                        //that.mapCtx.moveToLocation()
+                        // that.setMarkers(res.latitude,res.longitude)
+                        // let arr = that.setPos()
+                        // arr.push({
+                        //     id: 0,
+                        //     latitude: res.latitude,
+                        //     longitude: res.longitude,
+                        // })
+                        // that.markers = arr;
+                        // console.log(arr)
+                        // that.mapCtx.moveToLocation()
+                    }
+                })
+
+            },
+            // 设置marker
+            setMarkers(latitude,longitude) {
+                this.latitude = latitude,
+                this.longitude = longitude
+            },
+            hhhh() {
+                that.mapCtx.includePoints({
+                    padding:[10],
+                    points:[{
+                        latitude:that.obj.latitude,
+                        longitude:that.obj.longitude
+                    }]
+                })
+                that.mapCtx.translateMarker({
+                    markerId: 0,
+                    autoRotate: true,
+                    duration: 1000,
+                    destination: {
+                        latitude:that.obj.latitude,
+                        longitude:that.obj.longitude,
+                    },
+                    animationEnd() {
+                        console.log('animation end')
                     }
                 })
             },
@@ -480,5 +508,13 @@
         width:300rpx;
         text-align:center;
 
+    }
+    .map-arrow{
+        position:fixed;
+        top:50%;
+        left:50%;
+        transform:translate3d(-50%,-50%,0);
+        width: 60rpx;
+        height: 60rpx;
     }
 </style>
