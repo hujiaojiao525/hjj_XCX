@@ -15,8 +15,7 @@
             :markers="markers"
             scale="14"
             subkey="2AJBZ-GDVWW-CVYRV-O5UML-R66UK-GEFRL"
-            :style="{height: WinHeight+'px'}"
-            :latitude="latitude"
+            :style="{height: WinHeight+'px'}" :latitude="latitude"
             :longitude="longitude"
             @controltap="controltap"
             @markertap="markertap"
@@ -45,8 +44,9 @@
                 <cover-view class="text">扫码充电</cover-view>
             </cover-view>
             <cover-view class="layer" v-show="editPop"></cover-view>
+            <cover-view class="toast" v-show="isShowToast">{{toastText}}</cover-view>
         </map>
-        <div class="edit-pop"  v-show="editPop" :class="{editLayer: editPop}">
+        <div class="edit-pop" :class="{editLayer: editPop}"  v-show="editPop" >
             <image @click="closePop" class="close-btn" src="../../static/image/close.png"></image>
             <div class="edit-title">输入终端编号充电</div>
             <div class="edit-mes">终端编号位于充电终端二维码标签处，输入终端编号开启充电</div>
@@ -129,6 +129,8 @@
                 markers: requestData,
                 bottomHeight: '',
                 mapCtx: null,
+                isShowToast: true,
+                toastText: '位于居中位置'
             }
         },
         mounted(){
@@ -464,5 +466,19 @@
     }
     .editLayer{
         animation: mymove .5s;
+    }
+    .toast{
+        position:fixed;
+        background:rgba(0,0,0,0.8);
+        color:#ffffff;
+        top:44%;
+        left:50%;
+        transform:translate3d(-50%,-50%,0);
+        border-radius:8rpx;
+        height:70rpx;
+        line-height:70rpx;
+        width:300rpx;
+        text-align:center;
+
     }
 </style>
