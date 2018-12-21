@@ -252,14 +252,14 @@
                     success: function(res) {
                         console.log(1);
                         // 通过获取的经纬度进行请求数据
-                        // that.setMarkers(res.latitude,res.longitude)
-                        // let arr = that.setPos()
+                        that.setMarkers(res.latitude,res.longitude)
+                        let arr = that.setPos()
                         // arr.push({
                         //     id: 0,
                         //     latitude: res.latitude,
                         //     longitude: res.longitude,
                         // })
-                        // that.markers = arr;
+                        that.markers = arr;
                         // console.log(arr)
                         // that.mapCtx.moveToLocation()
                     }
@@ -351,14 +351,14 @@
     }
 
     .map-mes {
-        width: 135 rpx;
-        height: 120 rpx;
-        margin: 60 rpx 0 0 60 rpx;
+        width: 135rpx;
+        height: 120rpx;
+        margin: 60rpx 0 0 60rpx;
         display: none;
     }
 
     .map-top {
-        padding: 15 rpx;
+        padding: 15rpx;
         background: #47B0CE;
         box-sizing: border-box;
         width: 100%;
@@ -370,11 +370,11 @@
     }
 
     .search-box {
-        height: 70 rpx;
+        height: 70rpx;
         width: 88%;
         background: #fff;
-        border-radius: 10 rpx;
-        padding: 0 15 rpx;
+        border-radius: 10rpx;
+        padding: 0 15rpx;
         box-sizing: border-box;
         position: relative;
     }
@@ -383,86 +383,86 @@
         background: rgba(0, 0, 0, .6);
         position: fixed;
         width: 100%;
-        height: 100 rpx;
+        height: 100rpx;
         left: 0;
         top: 0;
         z-index: 5;
     }
 
     .search-img {
-        width: 30 rpx;
-        height: 30 rpx;
+        width: 30rpx;
+        height: 30rpx;
         position: absolute;
-        left: 15 rpx;
+        left: 15rpx;
         top: 50%;
-        margin-top: -15 rpx;
+        margin-top: -15rpx;
     }
 
     .search-input {
         display: inline-block;
-        height: 70 rpx;
-        margin-left: 45 rpx;
+        height: 70rpx;
+        margin-left: 45rpx;
         font-size: 16px;
     }
 
     .listImg-img {
-        width: 50 rpx;
-        height: 50 rpx;
+        width: 50rpx;
+        height: 50rpx;
         position: absolute;
-        right: 15 rpx;
+        right: 15rpx;
         top: 50%;
-        margin-top: -25 rpx;
+        margin-top: -25rpx;
 
     }
 
     .edit-img, .screen-img, .again-img, .my-img {
-        width: 72 rpx;
-        height: 72 rpx;
+        width: 72rpx;
+        height: 72rpx;
         background: #fff;
         border-radius: 100%;
         text-align: center;
-        margin-bottom: 30 rpx;
-        line-height: 62 rpx;
-        margin-left: 100 rpx;
+        margin-bottom: 30rpx;
+        line-height: 62rpx;
+        margin-left: 100rpx;
     }
 
     .edit-img {
-        margin-top: 650 rpx;
+        margin-top: 650rpx;
     }
 
     .img {
-        width: 40 rpx;
-        height: 40 rpx;
+        width: 40rpx;
+        height: 40rpx;
         vertical-align: middle;
-        margin: 16 rpx auto;
+        margin: 16rpx auto;
     }
 
     .my-img {
-        margin-left: 600 rpx;
-        margin-top: -100 rpx;
+        margin-left: 600rpx;
+        margin-top: -100rpx;
     }
 
     .sweep-box {
         background: #538EEB;
-        width: 170 rpx;
-        height: 170 rpx;
+        width: 170rpx;
+        height: 170rpx;
         border-radius: 100%;
-        margin: -120 rpx auto 0 auto;
+        margin: -120rpx auto 0 auto;
         text-align: center;
         box-sizing: border-box;
-        padding-top: 35 rpx;
+        padding-top: 35rpx;
     }
 
     .sweep-box .img {
-        width: 40 rpx;
-        height: 40 rpx;
+        width: 40rpx;
+        height: 40rpx;
         display: block;
         margin: 0 auto;
     }
 
     .sweep-box .text {
         color: #fff;
-        margin-top: 25 rpx;
+        margin-top: 25rpx;
         font-size: 14px;
     }
 
@@ -478,16 +478,16 @@
 
     .close-btn {
         position: absolute;
-        top: 20 rpx;
-        right: 20 rpx;
-        width: 40 rpx;
-        height: 40 rpx;
+        top: 20rpx;
+        right: 20rpx;
+        width: 40rpx;
+        height: 40rpx;
     }
 
     .edit-title {
         font-size: 16px;
         color: #1a1a1a;
-        line-height: 80 rpx;
+        line-height: 80rpx;
         text-align: center;
     }
 
@@ -504,16 +504,16 @@
     .edit-mes {
         font-size: 12px;
         color: #666;
-        margin-bottom: 30 rpx;
+        margin-bottom: 30rpx;
         text-align: center;
     }
 
     .edit-input {
-        height: 140 rpx;
+        height: 140rpx;
         background: #fff;
-        border-top: 1 rpx solid #ddd;
+        border-top: 1rpx solid #ddd;
         font-size: 16px;
-        padding-left: 100 rpx;
+        padding-left: 100rpx;
     }
 
     .editLayer {
@@ -527,10 +527,10 @@
         top: 44%;
         left: 50%;
         transform: translate3d(-50%, -50%, 0);
-        border-radius: 8 rpx;
-        height: 70 rpx;
-        line-height: 70 rpx;
-        width: 300 rpx;
+        border-radius: 8rpx;
+        height: 70rpx;
+        line-height: 70rpx;
+        width: 300rpx;
         text-align: center;
 
     }
@@ -540,7 +540,7 @@
         top: 50%;
         left: 50%;
         transform: translate3d(-50%, -50%, 0);
-        width: 60 rpx;
-        height: 60 rpx;
+        width: 40rpx;
+        height: 80rpx;
     }
 </style>
