@@ -38,7 +38,7 @@
 								<div>
 									<span class="star-container">
 				                    	<span class="star"></span>
-				                    	<span class="star-bg" :style="{width : (50*(93/100))+'px'}"></span>
+				                    	<span :style="{width : (50*(93/100))+'px'}" class="star-bg"></span>
 			                    	</span>
 									<span>最近充电<span>1</span>分钟前</span>
 								</div>
@@ -72,7 +72,7 @@
 								<div>
 									<span class="star-container">
 				                    	<span class="star"></span>
-				                    	<span class="star-bg" :style="{width : (50*(93/100))+'px'}"></span>
+				                    	<span  :style="{width : (50*(93/100))+'px'}" class="star-bg"></span>
 			                    	</span>
 									<span>最近充电<span>1</span>分钟前</span>
 								</div>
@@ -91,15 +91,13 @@
 			</div>
 
 		</div>
-		<div class="pay-time">
-            <span></span>
-            <p>没有更多了</p>
-        </div>
+		<bottomLine></bottomLine>
 
     </div>
 </template>
 
 <script>
+	import bottomLine from '../../components/bottomLine'
 
     export default {
         data() {
@@ -107,6 +105,9 @@
 				stars: [1,2,3,4,5],
 				score: 3
             }
+        },
+        components: {
+            bottomLine
         },
         mounted(){
 

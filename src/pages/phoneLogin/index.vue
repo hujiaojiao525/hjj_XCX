@@ -5,45 +5,45 @@
         </div>
         <div class="input-wrapper border-top">
             <span class="label-text">手机号</span>
-            <input 
+            <input
                 class="inputbox"
-                v-model.trim="telNumber" 
+                v-model.trim="telNumber"
                 maxlength="11"
-                type="number" 
-                placeholder="输入手机号" 
-                placeholder-class="placeholder" 
-                @focus="onFocus(1)" 
+                type="number"
+                placeholder="输入手机号"
+                placeholder-class="placeholder"
+                @focus="onFocus(1)"
                 @blur="onBlur(1)" />
-            <span class="clear-btn" v-show="!!telNumber && telNumberFocused" @click="onClear(1)">x</span>    
+            <span class="clear-btn" v-show="!!telNumber && telNumberFocused" @click="onClear(1)">x</span>
         </div>
         <div class="input-wrapper top-margin">
             <span class="label-text">图形验证码</span>
-            <input 
-                class="inputbox" 
-                type="text" 
-                v-model.trim="authCode" 
-                maxlength="6" 
-                placeholder="请输入验证码" 
-                placeholder-class="placeholder" 
+            <input
+                class="inputbox"
+                type="text"
+                v-model.trim="authCode"
+                maxlength="6"
+                placeholder="请输入验证码"
+                placeholder-class="placeholder"
                 adjust-position=true />
             <img class="captcha" :src="captchaUrl" @click="refresh">
         </div>
         <div class="input-wrapper top-margin positionR">
             <span class="label-text">短信验证码</span>
-            <input 
-                class="inputbox" 
-                type="text" 
-                v-model.trim="securityCode" 
-                placeholder="输入验证码" 
+            <input
+                class="inputbox"
+                type="text"
+                v-model.trim="securityCode"
+                placeholder="输入验证码"
                 maxlength="6"
-                placeholder-class="placeholder" 
-                @focus="onFocus(2)" 
+                placeholder-class="placeholder"
+                @focus="onFocus(2)"
                 @blur="onBlur(2)" />
             <span class="clear-btn clear-code" v-show="!!securityCode && passwordFocused"  @click="onClear(2)">x</span>
-            <button @click="getNoteCode" class="verificationCode" :class="{verCodeC:verCodeC}">{{getCodeText}}</button> 
+            <button @click="getNoteCode" :class="{verCodeC:verCodeC}" class="verificationCode">{{getCodeText}}</button>
         </div>
         <div>
-            <button @click="onBtnClick" class="button" :class="{disabled:disabled,'phoneBtnLogin':phoneLogin}" >登录</button>
+            <button :class="{disabled:disabled,'phoneBtnLogin':phoneLogin}" @click="onBtnClick" class="button">登录</button>
         </div>
     </div>
 </template>
@@ -215,7 +215,7 @@
                         if(system.indexOf("Android") != -1) {
                             self.clientType = 0;
                         }
-                        
+
                     }
                 });
             },
@@ -321,7 +321,7 @@
                     type: self.type, //1 登录 10修改手机号 11绑定手机号 ,
                     code:self.userCode,
                 };
-                wx.request({                
+                wx.request({
                     url: `${process.env.BASE_URL}/api/ValuaLogin/MobileLogin`,
                     data: useInfo, //传参
                     method: 'post',
@@ -349,7 +349,7 @@
                                             key: "alreadyLogin",
                                             data: true
                                         });
-                               }    
+                               }
                             }
                             }
                         if(res.data.code!=0){
@@ -371,7 +371,7 @@
     };
 </script>
 
-<style lang="stylus">
+<style>
     @import "../../assest/fonts/iconfont.css";
     .container {
         width: 686rpx;
@@ -385,7 +385,7 @@
         height: 200rpx;
         margin: 35rpx 0;
     }
-    
+
     .input-wrapper {
         display: flex;
         flex-direction: row;
@@ -394,15 +394,15 @@
         line-height: 104rpx;
         border-bottom: 1rpx solid #ddd;
     }
-    
+
     .positionR {
         position: relative;
     }
-    
+
     .label-text {
         font-size: 16px;
     }
-    
+
     .border-top {
         border-top: 1rpx solid #ddd;
     }
@@ -424,20 +424,20 @@
         margin-right: 30rpx;
         color: #999;
     }
-    
+
     .clear-code {
         margin-right: 300rpx;
     }
-    
+
     .top-margin {
         margin-top: 14rpx;
     }
-    
+
     .placeholder {
         font-size: 16px;
         color: #ccc;
     }
-    
+
     .err {
         margin: 24rpx 0;
         font-size: 12px;
@@ -445,16 +445,16 @@
         letter-spacing: 0;
         line-height: 24px;
     }
-    
+
     img.captcha {
         width: 140rpx;
         height: 68rpx;
     }
-    
+
     button::after {
         border: none;
     }
-    
+
     .verificationCode {
         font-size: 32rpx;
         color: #5690E8;
@@ -464,17 +464,17 @@
         z-index: 999;
         background: #fff;
     }
-    
+
     .verCodeC {
         color: #CCC;
     }
-    
+
     .msgSuccess {
         font-size: 30rpx;
         color: #999;
         margin-top: 40rpx;
     }
-    
+
     .msgSuccess img.imgSuccess {
         width: 40rpx;
         height: 40rpx;
@@ -483,7 +483,7 @@
         left: 10rpx;
         margin-right: 30rpx;
     }
-    
+
     .button {
         width: 686rpx;
         height: 88rpx;
@@ -495,16 +495,16 @@
         background: #538EEB;
         border-radius: 8rpx;
     }
-    
+
     .disabled {
         background: #C4D5F9;
     }
-    
+
     .ewm {
         text-align: center;
         margin-top: 120rpx;
     }
-    
+
     p {
         font-size: 24rpx;
         color: #999999;
