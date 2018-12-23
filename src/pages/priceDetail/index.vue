@@ -1,34 +1,29 @@
 <template>
-    <div class="order-list">
-        <ul class="order-tab">
-            <li v-for="(item,index) in orderList" :key="index"
-                :class="{choose: chooseId === item.id}"  @click="changeTab(item.id)">
-                {{item.val}}
-                <span class="tab-line" v-show="chooseId === item.id"></span>
+    <div class="price-detail">
+        <ul class="">
+            <li>
+                <div>
+                    <p><span>0.6400</span>元/度(含服务费)</p>
+                    <p>00:00-24:00</p>
+                </div>
+                <p>电费0.0000元/度</p>
             </li>
         </ul>
-        <noMore></noMore>
+        <bottomLine></bottomLine>
     </div>
 </template>
 <script>
     import store from '../vuex/store';
-    import noMore from '../../components/noMore'
+    import bottomLine from '../../components/bottomLine'
     export default {
         store,
         data() {
             return {
-                orderList: [
-                    {val: '全部订单',id:0},
-                    {val: '待支付',id:1},
-                    {val: '已支付',id:2},
-                    {val: '待评论',id:3},
-                ],
-                chooseId: 0,
-                isShowBlank: true
+
             };
         },
         components: {
-            noMore
+            bottomLine
         },
         onShow() {
 
@@ -49,5 +44,13 @@
     page{
         background: #F5F4FA;
     }
-    
+    .price-detail li{
+        background: #fff;
+        padding: 30rpx;
+        font-size: 28rpx;
+    }
+    .price-detail li div{
+        display: flex;
+        justify-content: space-between;
+    }
 </style>

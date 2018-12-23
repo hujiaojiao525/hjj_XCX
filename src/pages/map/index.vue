@@ -10,19 +10,16 @@
         </div>
         <div class="top-layer" v-show="editPop"></div>
         <map
-            disable-scroll="true"
             id="map"
             :markers="markers"
             scale="14"
-            subkey="2AJBZ-GDVWW-CVYRV-O5UML-R66UK-GEFRL"
-            :style="{height: WinHeight+'px'}" :latitude="latitude"
+            subkey="KNDBZ-Z7DWQ-4LB5A-GQU5A-I4MKT-BCFHF"
+            :style="{height: WinHeight+'px'}"
+            :latitude="latitude"
             :longitude="longitude"
-            @controltap="controltap"
             @callouttap="goToDetail"
-            @begin="regionchange"
             @end="regionchange"
             @regionchange="regionchange"
-            :controls="controls"
             show-location
         >
             <cover-image class="map-mes" src="../../static/image/indexLeft.png"/>
@@ -125,14 +122,14 @@
                 editPop: false,
                 focus: false,
                 WinHeight: "",
-                latitude: 23.099994,
-                longitude: 113.324520,
                 markers: requestData,
                 bottomHeight: "",
                 mapCtx: null,
                 isShowToast: true,
                 toastText: "位于居中位置",
-                obj: {}
+                obj: {},
+                latitude: '',
+                longitude: ''
             };
         },
         mounted() {
@@ -142,13 +139,11 @@
             query.exec(function(hei) {
                 wx.getSystemInfo({
                     success: function(res) {
-                        console.log(hei[0].height);
                         self.WinHeight = res.windowHeight - hei[0].height;
                     }
                 });
             });
-            this.currentPos();
-
+            this.currentPos()
         },
         onReady: function(e) {
             this.mapCtx = wx.createMapContext("map");
@@ -208,16 +203,15 @@
             },
             // 重新定位
             againPos() {
-
                 var that = this;
                 that.mapCtx.moveToLocation({
                     success: function(res) {
+                        console.log(res)
                         // 通过获取的经纬度进行请求数据
                         let arr = that.setPos();
                         that.markers = arr;
                     }
                 });
-                //this.currentPos();
             },
             // 定位到当前位置
             currentPos() {
@@ -242,65 +236,18 @@
             regionchange(e) {
                 if (e.type == "end") {
                     this.getLngLat();
-
                 }
             },
-
             getLngLat: function() {
                 var that = this;
                 that.mapCtx.getCenterLocation({
                     success: function(res) {
-                        console.log(1);
+                        console.log(res);
                         // 通过获取的经纬度进行请求数据
-                        that.setMarkers(res.latitude,res.longitude)
                         let arr = that.setPos()
-                        // arr.push({
-                        //     id: 0,
-                        //     latitude: res.latitude,
-                        //     longitude: res.longitude,
-                        // })
                         that.markers = arr;
-                        // console.log(arr)
-                        // that.mapCtx.moveToLocation()
                     }
                 });
-
-            },
-            // 设置marker
-            setMarkers(latitude, longitude) {
-                this.latitude = latitude,
-                    this.longitude = longitude;
-            },
-            hhhh() {
-                that.mapCtx.includePoints({
-                    padding: [10],
-                    points: [{
-                        latitude: that.obj.latitude,
-                        longitude: that.obj.longitude
-                    }]
-                });
-                that.mapCtx.translateMarker({
-                    markerId: 0,
-                    autoRotate: true,
-                    duration: 1000,
-                    destination: {
-                        latitude: that.obj.latitude,
-                        longitude: that.obj.longitude
-                    },
-                    animationEnd() {
-                        console.log("animation end");
-                    }
-                });
-            },
-            touchmove(event) {
-                console.log(0);
-                event.preventDefault();
-            },
-            markertap(e) {
-                console.log(e);
-            },
-            controltap(e) {
-                console.log(e);
             },
             goToMy() {
                 wx.navigateTo({
@@ -316,7 +263,6 @@
                     var query = wx.createSelectorQuery();
                     query.select(".edit-pop").boundingClientRect();
                     query.exec(function(hei) {
-                        console.log(hei[0].height);
                         self.bottomHeight = hei[0].height;
                         self.WinHeight = self.WinHeight - hei[0].height;
 
@@ -336,6 +282,9 @@
             },
             goToDetail(e) {
                 console.log(e);
+                wx.navigateTo({
+                    url: "/pages/powerDetail/main"
+                });
             }
         }
     };
@@ -540,7 +489,7 @@
         top: 50%;
         left: 50%;
         transform: translate3d(-50%, -50%, 0);
-        width: 40rpx;
+        width: 45rpx;
         height: 80rpx;
     }
 </style>

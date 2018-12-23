@@ -5,6 +5,6 @@ const app = new Vue(App)
 app.$mount()
 export default {
     config: {
-        "navigationBarTitleText": "电站详情",
+        "navigationBarTitleText": "终端详情",
     }
 }

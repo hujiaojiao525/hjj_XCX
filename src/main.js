@@ -23,7 +23,7 @@ export default {
 		],
 		window: {
             backgroundTextStyle: 'light',
-            navigationBarTitleText: '地图组件demo',
+            navigationBarTitleText: '鼎天新能源',
             "navigationBarBackgroundColor": "#47B0CE",
             "navigationBarTextStyle": "white",
         },

@@ -1,34 +1,45 @@
 <template>
-    <div class="order-list">
-        <ul class="order-tab">
-            <li v-for="(item,index) in orderList" :key="index"
-                :class="{choose: chooseId === item.id}"  @click="changeTab(item.id)">
-                {{item.val}}
-                <span class="tab-line" v-show="chooseId === item.id"></span>
+    <div class="charge-success">
+        <div class="success-top">
+            <image src="../../static/image/success.png"></image>
+            <span class="blue">已验证</span>
+            <image src="../../static/image/wenhao.png"></image>
+            <span>未验证</span>
+        </div>
+        <ul class="">
+            <li>
+                <image src="../../static/image/wenhao.png"></image>
+                <div class="charge-mes">
+                    <p>未知车型</p>
+                    <p>X200</p>
+                </div>
+                <p class="border-text">103号交流</p>
+                <p class="number">1***8</p>
+                <p class="time">2小时前</p>
+            </li>
+            <li>
+                <image src="../../static/image/wenhao.png"></image>
+                <p class="charge-mes">未知车型</p>
+                <p class="border-text">103号交流</p>
+                <p class="number">1***8</p>
+                <p class="time">12-20 08:47</p>
             </li>
         </ul>
-        <noMore></noMore>
+        <bottomLine></bottomLine>
     </div>
 </template>
 <script>
     import store from '../vuex/store';
-    import noMore from '../../components/noMore'
+    import bottomLine from '../../components/bottomLine'
     export default {
         store,
         data() {
             return {
-                orderList: [
-                    {val: '全部订单',id:0},
-                    {val: '待支付',id:1},
-                    {val: '已支付',id:2},
-                    {val: '待评论',id:3},
-                ],
-                chooseId: 0,
-                isShowBlank: true
+
             };
         },
         components: {
-            noMore
+            bottomLine
         },
         onShow() {
 
@@ -49,5 +60,51 @@
     page{
         background: #F5F4FA;
     }
-    
+    .success-top{
+        background: #ffffff;
+        text-align: right;
+        border-bottom: 1rpx solid #ccc;
+        padding: 20rpx 30rpx 20rpx 0;
+    }
+    .success-top image{
+        width: 40rpx;
+        height: 40rpx;
+        vertical-align: middle;
+        margin: 0 20rpx;
+    }
+    .success-top span{
+        font-size: 30rpx;
+    }
+    .success-top .blue{
+        color: #47B0CE;
+    }
+    .charge-success li{
+        background: #fff;
+        padding: 30rpx;
+        font-size: 28rpx;
+        display: flex;
+        justify-content: space-between;
+        color: #ccc;
+    }
+    .charge-success li image{
+        width: 40rpx;
+        height: 40rpx;
+    }
+    .charge-mes{
+        width: 20%;
+        text-align: left;
+    }
+    .border-text{
+        border: 1rpx solid blue;
+        color: blue;
+        width: 150rpx;
+        height: 50rpx;
+        line-height: 50rpx;
+        text-align: center;
+        border-radius: 8rpx;
+    }
+    .time{
+        width: 25%;
+        text-align: right;
+    }
 </style>

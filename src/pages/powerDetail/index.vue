@@ -37,19 +37,19 @@
                     <p>北京市通州区运河城东法界32号北京市听得抵金额细腻恩</p>
                     <span>距我26.3km</span>
                 </div>
-                <div class="navigation">导航</div>
+                <div class="navigation" @click="goDaoHang">导航</div>
             </div>
             <ul class="detail-list">
                 <li>
                     <p class="list-left">当前价格</p>
                     <div class="list-right">
                         <p><span class="red">1.3800</span>元/度(含服务费)</p>
-                        <p class="gray-color">
+                        <p class="gray-color" @click="goToPriceDetail">
                             <span>全天价格统一</span>
                             <span>价格详情</span>
                             <i class="iconfont icon-jiantou  right"></i>
                         </p>
-                        
+
                     </div>
                 </li>
                 <li>
@@ -76,7 +76,7 @@
                         <p>400-1234-567</p>
                     </div>
                 </li>
-                <li>
+                <li @click="goToCharge">
                     <p class="list-left black">近七天成功充电<span class="red">11</span>次</p>
                     <div class="list-right">
                         <p>
@@ -102,12 +102,12 @@
                                 </span>
                            </div>
                            <p>还可还可以吧！还可以吧！还可以吧！以吧！</p>
-                       </div> 
+                       </div>
                        <p class="comment-right">02-20 18:01</p>
                     </li>
                 </ul>
             </div>
-            
+
         </div>
         <!--  充电终端  -->
         <div v-show="chooseId === 1" class="detail-right">
@@ -142,7 +142,7 @@
                            <i class="iconfont icon-jiantou  right"></i>
                        </p>
                    </div>
-               </li> 
+               </li>
                <li>
                    <div class="tab-right-left">
                        <p><span class="big-text">101</span>号</p>
@@ -162,7 +162,7 @@
                            <i class="iconfont icon-jiantou  right"></i>
                        </p>
                    </div>
-               </li> 
+               </li>
             </ul>
         </div>
         <!-- 筛选 -->
@@ -182,7 +182,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="screent-bottom">
                     <button  @click="resetFun" class="button reset">
                         重置
@@ -193,7 +193,13 @@
                 </div>
             </div>
         </div>
-        
+        <!--快速导航-->
+        <!--<div class="quick">-->
+            <!--<p class="quick-mes">快捷导航</p>-->
+            <!--<ul>-->
+                <!--<li></li>-->
+            <!--</ul>-->
+        <!--</div>-->
         <bottomLine></bottomLine>
     </div>
 </template>
@@ -297,7 +303,7 @@
                     {val: '已插枪',id: 2},
                     {val: '直流快充',id: 3},
                 ],
-                chooseId: 1,
+                chooseId: 0,
                 tabRightId: 0,
                 requestData: [],
                 clickArr: [],
@@ -325,12 +331,26 @@
             this.requestData = requestData
         },
         methods: {
+            // 跳转价格详情页面
+            goToPriceDetail() {
+                wx.navigateTo({
+                    url: "/pages/priceDetail/main"
+                });
+            },
+            // 跳转近七日成功充电页面
+            goToCharge() {
+                wx.navigateTo({
+                    url: "/pages/chargeSuccess/main"
+                });
+            },
+            // 点击筛选
             clickScreen() {
                 this.isShowScreen = true;
                 // console.log(this.animation)
                 // this.animation.translateY(500).step()
                 // this.animation = this.animation.export()
             },
+            // 关闭筛选
             close() {
                 this.isShowScreen = false;
             },
@@ -373,6 +393,25 @@
                 })
                 this.requestData = requestData
             },
+            // 点击完成
+            finishFun() {
+                this.isShowScreen = false;
+            },
+            // 去导航
+            goDaoHang() {
+                wx.getLocation({
+                    type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+                    success (res) {
+                        const latitude = res.latitude
+                        const longitude = res.longitude
+                        wx.openLocation({
+                            latitude,
+                            longitude,
+                            scale: 28
+                        })
+                    }
+                })
+            }
         }
     };
 </script>
@@ -611,7 +650,7 @@
         height: 80rpx;
     }
     .position-text{
-        width: 75%;
+        width: 73%;
     }
     .position-text p{
         font-size: 30rpx;
@@ -659,6 +698,7 @@
         display: inline-block;
         margin-left: 10rpx;
         margin-top: 15rpx;
+        font-size: 30rpx;
     }
      .comment-list{
         background: #fff;
@@ -769,8 +809,8 @@
     .bottom-label{
         padding: 6rpx 16rpx;
         background:  #70C1AE;
-        color:#ffffff; 
-        border-radius: 10rpx;    
+        color:#ffffff;
+        border-radius: 10rpx;
     }
     .tab-right-middle{
         width: 45%;
