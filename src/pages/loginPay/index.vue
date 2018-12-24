@@ -39,6 +39,7 @@
                                 iv: e.mp.detail.iv,
                                 encryptedData: e.mp.detail.encryptedData,
                             }
+                            console.log(JSON.stringify(getUseInfo))
                             wx.request({
                                 url: `${process.env.BASE_URL}/api/ValuaLogin/AuthLogin`,
                                 data: getUseInfo, //传参

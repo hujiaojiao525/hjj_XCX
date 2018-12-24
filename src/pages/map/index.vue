@@ -4,7 +4,8 @@
         <div class="map-top">
             <div class="search-box" @click="goToSearch">
                 <image class="search-img" src="../../static/image/search.png"></image>
-                <input class="search-input" type="text" placeholder="输入目的地/电站名" readonly=true>
+                <span class="search-input">输入目的地/电站名</span>
+                <!-- <input class="search-input" type="text" placeholder="输入目的地/电站名"> -->
             </div>
             <image class="listImg-img" @click="goToList" src="../../static/image/listImg.png"></image>
         </div>
@@ -42,7 +43,6 @@
             </cover-view>
             <cover-view class="layer" v-show="editPop"></cover-view>
             <cover-image class="map-arrow" src="../../static/image/mapArrow.png"></cover-image>
-            <!--<cover-view class="toast" v-show="isShowToast">{{toastText}}</cover-view>-->
         </map>
         <div class="edit-pop" :class="{editLayer: editPop}" v-show="editPop">
             <image @click="closePop" class="close-btn" src="../../static/image/close.png"></image>
@@ -144,6 +144,7 @@
                 });
             });
             this.currentPos()
+            this.showToast()
         },
         onReady: function(e) {
             this.mapCtx = wx.createMapContext("map");
@@ -224,6 +225,14 @@
                         self.longitude = res.longitude;
                     }
                 });
+            },
+            // toast
+            showToast() {
+                wx.showToast({
+                    title: '距离2公里共8座充电站',
+                    icon: "none",
+                    duration: 2000
+                })
             },
             setPos() {
                 let markers = [];
@@ -326,6 +335,7 @@
         padding: 0 15rpx;
         box-sizing: border-box;
         position: relative;
+        line-height: 65rpx;
     }
 
     .top-layer {
@@ -352,6 +362,7 @@
         height: 70rpx;
         margin-left: 45rpx;
         font-size: 16px;
+        color: #ccc;
     }
 
     .listImg-img {

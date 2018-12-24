@@ -167,7 +167,7 @@
         </div>
         <!-- 筛选 -->
         <div class="power-layer" v-if="isShowScreen">
-            <div class="power-screen" :animation="animation">
+            <div class="power-screen" :animation="animationData">
                 <div class="power-screen-title">
                     <span>筛选</span>
                     <span @click="close">X</span>
@@ -308,14 +308,11 @@
                 requestData: [],
                 clickArr: [],
                 isShowScreen: false,
-                animation: {},
+                animationData: {},
             };
         },
         components: {
             bottomLine
-        },
-        onShow() {
-            this.animation = wx.createAnimation()
         },
         onUnload() {
 
@@ -345,10 +342,11 @@
             },
             // 点击筛选
             clickScreen() {
+                
+                // const animation = wx.createAnimation()
+                // animation.translateY(0).step({duration: 1000})
+                // this.animationData = animation.export()
                 this.isShowScreen = true;
-                // console.log(this.animation)
-                // this.animation.translateY(500).step()
-                // this.animation = this.animation.export()
             },
             // 关闭筛选
             close() {
@@ -424,11 +422,11 @@
     .power-layer{
         position: fixed;
         left:0;
-        right:0;
+        top:0;
         width:100%;
         height: 100%;
         z-index: 7;
-        background: rgab(0,0,0,0.6)
+        background: rgba(0,0,0,0.6)
     }
     .power-screen{
         height: 85%;
