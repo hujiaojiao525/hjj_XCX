@@ -20,6 +20,7 @@ export default {
             'pages/balanceDetail/main',
             'pages/order/main',
             'pages/search/main',
+            'pages/message/main',
 		],
 		window: {
             backgroundTextStyle: 'light',
