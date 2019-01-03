@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'YournameD7HomeCondensed';
+    src: url('YournameD7HomeCondensed.eot');
+    src: url('YournameD7HomeCondensed.eot?#iefix') format('embedded-opentype'),
+        url('YournameD7HomeCondensed.woff2') format('woff2'),
+        url('YournameD7HomeCondensed.woff') format('woff'),
+        url('YournameD7HomeCondensed.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+

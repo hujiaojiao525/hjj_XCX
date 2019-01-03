@@ -4,8 +4,8 @@
             <h2 class="recharge-title">充值金额</h2>
             <ul class="recharge-list">
                 <li v-for="(item,index) in moneyType" :key="index"
-                    :class="{choose: item.id === chooseMoneyId}"
-                    @click="chooseSearch(item.id)">
+                    :class="{choose: item.id === chooseMoneyId}" @click="chooseSearch(item.id)">
+                    
                     {{item.value}}
                 </li>
             </ul>
@@ -18,7 +18,7 @@
         <p class="recharge-mes">
             点击立即充值即表示您已阅读并同意<span class="recharge-pro">《充值协议》</span>
         </p>
-        <div class="recharge-btn">立即充值</div>
+        <div class="recharge-btn" @click="rechargeBtn">立即充值</div>
         <div class="balance" @click="goToBalanceDetail">点击查看余额明细</div>
     </div>
 </template>
@@ -53,6 +53,39 @@
             chooseSearch(id) {
                 this.chooseMoneyId = id;
             },
+            rechargeBtn() {
+                const data = {"code": 0, "data": {"timeStamp": "1545722518", "paySign": "FE09968E188784978C0E82A69027E12A", "nonceStr": "EPaiGUgjOikdQkPr", "package": "prepay_id=wx25152158585314bace2b84392992484660"}}
+                wx.requestPayment({
+                    timeStamp: data.data.timeStamp,
+                    nonceStr: data.data.nonceStr,
+                    package: data.data.package,
+                    signType: 'MD5',
+                    paySign: data.data.paySign,
+                    success(res) {
+                        
+                        console.log(res);
+                    },
+                    fail(res) {
+                        
+                        console.log(res);
+                    }
+                })
+                // wx.requestPayment({
+                //     timeStamp: '1545722168',
+                //     nonceStr: 'oPBs7gLjSNz4VwgH',
+                //     package: 'wx25151609024338e8c5830d540211578460',
+                //     signType: 'MD5',
+                //     paySign: '15E8F8496A253C7F1817AC4F1B3EB3C9',
+                //     success(res) {
+                        
+                //         console.log(res);
+                //     },
+                //     fail(res) {
+                        
+                //         console.log(res);
+                //     }
+                // })
+            }
         }
     };
 </script>

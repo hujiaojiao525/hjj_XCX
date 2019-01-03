@@ -21,12 +21,14 @@ export default {
             'pages/order/main',
             'pages/search/main',
             'pages/message/main',
+            'pages/chargeWait/main',
+            'pages/chargeProgress/main',
 		],
 		window: {
             backgroundTextStyle: 'light',
             navigationBarTitleText: '鼎天新能源',
-            "navigationBarBackgroundColor": "#47B0CE",
-            "navigationBarTextStyle": "white",
+            navigationBarBackgroundColor: "#47B0CE",
+            navigationBarTextStyle: "white",
         },
 	}
 }
