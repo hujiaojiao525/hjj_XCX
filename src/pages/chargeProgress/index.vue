@@ -2,7 +2,7 @@
     <div class="charge-progress">
         <div class="progress-top">
             <div class="charge-time">
-                <span class="hour">00</span>:<span class="minute">00</span>:<span class="second">54</span>
+                {{showTime}}
             </div>
             <div class="progress-mes">
                 <div>
@@ -12,7 +12,7 @@
                 <div>
                     <p class="progress-title">充电时长</p>
                     <p class="font-family">
-                        <span class="hour">00</span>:<span class="minute">00</span>:<span class="second">54</span>
+                        {{showTime}}
                     </p>
                 </div>
                 <div>
@@ -77,19 +77,54 @@
     export default {
         store,
         data() {
-            return {};
+            return {
+                second: 0,
+                minute: 0,
+                hour: 0,
+                timer: null,
+                showTime: '00:00:00'
+            };
         },
         components: {
             bottomLine
         },
         onShow() {
-
+            // this.timer = setInterval(this.timerFun, 1000)
 
         },
         onUnload() {
 
         },
         methods: {
+            timerFun() {
+                const self = this;
+                let second=0, minute=0, hour=0;
+
+                this.second = this.second + 1;
+                if(this.second>=60) {
+                    this.second = 0;
+                    this.minute = this.minute+1;
+                }
+                if(this.minute>=60) {
+                    this.minute=0;
+                    this.hour=this.hour+1;
+                }
+                second = this.second;
+                minute = this.minute;
+                hour = this.hour;
+                if (this.second < 10) {
+                    second = '0'+ this.second;
+                }
+                if (this.minute< 10) {
+                    minute = '0'+ this.minute;
+                }
+                if (this.hour< 10) {
+                    hour = '0'+ this.hour;
+                }
+                this.showTime = hour+':'+minute+':'+second
+                console.log(hour+'时'+minute+'分'+second+'秒')
+                // console.log(self.hour+'时'+self.minute+'分'+self.second+'秒')
+            },
             changeTab(id) {
                 this.chooseId = id;
             },
