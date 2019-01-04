@@ -82,7 +82,8 @@
                 minute: 0,
                 hour: 0,
                 timer: null,
-                showTime: '00:00:00'
+                showTime: '00:00:00',
+                beginTime: ''
             };
         },
         components: {
@@ -90,7 +91,7 @@
         },
         onShow() {
             // this.timer = setInterval(this.timerFun, 1000)
-
+            this.beginTime = new Date().getTime();
         },
         onUnload() {
 
@@ -124,6 +125,23 @@
                 this.showTime = hour+':'+minute+':'+second
                 console.log(hour+'时'+minute+'分'+second+'秒')
                 // console.log(self.hour+'时'+self.minute+'分'+self.second+'秒')
+            },
+            recordTime(mss) {
+                var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = parseInt((mss % (1000 * 60)) / 1000);
+                
+                // if (hours < 10) {
+                //     hours = '0' + hours;
+                // }
+                // if (minutes < 10) {
+                //     minutes = '0' + minutes;
+                // }
+                // if (seconds < 10) {
+                //     seconds = '0' + seconds;
+                // }
+                console.log(days + " 天 " + hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ")
+                return days + " 天 " + hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
             },
             changeTab(id) {
                 this.chooseId = id;
