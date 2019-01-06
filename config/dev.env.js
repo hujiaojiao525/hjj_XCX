@@ -3,7 +3,7 @@ var prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
     NODE_ENV: '"development"',
-    BASE_URL: '"https://uniapi.test.cheyipai.com"',
+    BASE_URL: '"https://cdz.0762ld.com"',
     MAPI_URL: '"https://mapi.test.cheyipai.com"',
     Monitor:'"https://monitor.test.cheyipai.com/"',
     SOUCHE_URL: '"https://wechat.proxy.dasouche.com"',

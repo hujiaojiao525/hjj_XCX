@@ -2,17 +2,17 @@
     <div class="my-container">
         <!--个人中心顶部内容-->
         <section class="my-top">
-            <div class="service icon">
-                <i class="serviceIcon iconfont icon-wode_fuwuzhongxinx"></i>
-                <span>客服</span>
-            </div>
-            <div class="set icon">
-                <i class="arrow iconfont icon-shezhicopyx"></i>
-                <span>设置</span>
-            </div>
+            <!--<div class="service icon">-->
+                <!--<i class="serviceIcon iconfont icon-wode_fuwuzhongxinx"></i>-->
+                <!--<span>客服</span>-->
+            <!--</div>-->
+            <!--<div class="set icon">-->
+                <!--<i class="arrow iconfont icon-shezhicopyx"></i>-->
+                <!--<span>设置</span>-->
+            <!--</div>-->
             <div class="my-message">
                 <image class="head-img" :src="headImg"></image>
-                <div class="login-mes">未登录</div>
+                <div class="login-mes">{{nickName}}</div>
             </div>
         </section>
         <!--我的信息列表-->
@@ -22,18 +22,18 @@
                 <i class="left-icon iconfont icon-yuangongguanlizx"></i>
                 <span class="formLabel">余额</span>
                 <p class="list-right">
-                    <span>--<span>元</span></span>
+                    <span>{{amount}}<span>元</span></span>
                     <span class="recharge" @click="goToRecharge">充值</span>
                 </p>
             </div>
-             <div class="list">
-                <i class="left-icon iconfont icon-shoucangzx"></i>
-                <span class="formLabel">我的卡劵</span>
-                <p class="list-right">
-                    <span>--<span>张</span></span>
-                    <i class="iconfont icon-jiantou  right"></i>
-                </p>
-            </div>
+            <!--<div class="list">-->
+                <!--<i class="left-icon iconfont icon-shoucangzx"></i>-->
+                <!--<span class="formLabel">我的卡劵</span>-->
+                <!--<p class="list-right">-->
+                    <!--<span>&#45;&#45;<span>张</span></span>-->
+                    <!--<i class="iconfont icon-jiantou  right"></i>-->
+                <!--</p>-->
+            <!--</div>-->
             <div class="list" @click="goToDetail">
                 <i class="left-icon iconfont icon-my_icon_ordermanage_"></i>
                 <span class="formLabel">我的订单</span>
@@ -42,50 +42,111 @@
                     <i class="iconfont icon-jiantou  right"></i>
                 </p>
             </div>
-            <div class="list">
-                <i class="left-icon iconfont icon-my_icon_ordermanage_"></i>
-                <span class="formLabel">我的积分</span>
-                <p class="list-right">
-                    <span>--<span>分</span></span>
-                    <i class="iconfont icon-jiantou  right"></i>
-                </p>
-            </div>
-            <div class="list">
-                <i class="left-icon iconfont icon-my_icon_ordermanage_"></i>
-                <span class="formLabel">我的问答</span>
-                <p class="list-right">
-                    <i class="iconfont icon-jiantou  right"></i>
-                </p>
-            </div>
+            <!--<div class="list">-->
+                <!--<i class="left-icon iconfont icon-my_icon_ordermanage_"></i>-->
+                <!--<span class="formLabel">我的积分</span>-->
+                <!--<p class="list-right">-->
+                    <!--<span>&#45;&#45;<span>分</span></span>-->
+                    <!--<i class="iconfont icon-jiantou  right"></i>-->
+                <!--</p>-->
+            <!--</div>-->
+            <!--<div class="list">-->
+                <!--<i class="left-icon iconfont icon-my_icon_ordermanage_"></i>-->
+                <!--<span class="formLabel">我的问答</span>-->
+                <!--<p class="list-right">-->
+                    <!--<i class="iconfont icon-jiantou  right"></i>-->
+                <!--</p>-->
+            <!--</div>-->
         </section>
         <!--注册登陆按钮-->
-        <div class="login-btn" @click="goToLogin">注册/登录</div>
+        <div class="login-btn" v-if="!isLogin" @click="goToLogin">注册/登录</div>
+        <div class="login-btn" v-else @click="exitLogin">退出登录</div>
+        <pop text="确定要退出嘛？"
+             :isShowLayerPop="isShowLayerPop"
+             @clickLeft="clickLeft"
+             @clickRight="clickRight"
+             leftBtnText="取消" rightBtnText="确定"></pop>
     </div>
 </template>
 
 <script>
+    import pop from '../../components/pop'
 
     export default {
         data() {
             return{
                 headImg: '../../static/image/defaultHeadImg.png',
+                isLogin: false,
+                amount: '--',
+                nickName: '未登录',
+                isShowLayerPop: false,
             }
         },
-        onshow(){
+        mounted(){
 
         },
+        onShow() {
+            this.getUserInfo()
+        },
+        components: {
+            pop,
+        },
         methods: {
+            // 获取用户信息
+            getUserInfo() {
+                var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
+                console.log(userInfo)
+                if (userInfo) {
+                    this.isLogin = true;
+                    this.amount = userInfo.total_amount / 100;
+                    this.nickName = userInfo.nick_name;
+                    this.headImg = userInfo.use_img ? userInfo.use_img : '../../static/image/defaultHeadImg.png';
+                }
+            },
+            clearMes() {
+                this.isLogin = false;
+                this.amount = '--';
+                this.nickName = '未登录';
+                this.headImg = '../../static/image/defaultHeadImg.png'
+            },
+            // 退出登录
+            exitLogin() {
+                this.isShowLayerPop = true;
+            },
+            clickLeft() {
+                this.isShowLayerPop = false;
+            },
+            clickRight() {
+                this.isShowLayerPop = false;
+                wx.removeStorageSync('userInfo')
+                this.clearMes();
+
+            },
             goToLogin() {
                 wx.navigateTo({
                     url: '/pages/loginPay/main'
                 })
             },
             goToRecharge() {
+                if (!this.isLogin) {
+                    // 去登录
+                    wx.navigateTo({
+                        url: '/pages/loginPay/main'
+                    })
+                    return;
+                }
                 wx.navigateTo({
                     url: '/pages/recharge/main'
                 })
             },
             goToDetail() {
+                if (!this.isLogin) {
+                    // 去登录
+                    wx.navigateTo({
+                        url: '/pages/loginPay/main'
+                    })
+                    return;
+                }
                 wx.navigateTo({
                     url: '/pages/order/main'
                 })

@@ -26,7 +26,6 @@
     </div>
 </template>
 <script>
-    import { setStorageFormIds } from '../utils'
     export default {
         props: {
             text: {
@@ -76,15 +75,12 @@
         },
         methods: {
             clickLeft(event) {
-                setStorageFormIds(event.mp.detail.formId);
                 this.$emit('clickLeft');
             },
             clickRight(event) {
-                setStorageFormIds(event.mp.detail.formId);
                 this.$emit('clickRight');
             },
             clickOnly(event){
-                setStorageFormIds(event.mp.detail.formId);
                 this.$emit('clickOnly');
             }
         }
@@ -136,7 +132,7 @@
         line-height: 94rpx;
         display:inline-block;
         padding:0;
-        width: 50%;        
+        width: 50%;
         color: #1A1A1A;
         font-size: 32rpx;
     }

@@ -5,7 +5,7 @@
             <ul class="recharge-list">
                 <li v-for="(item,index) in moneyType" :key="index"
                     :class="{choose: item.id === chooseMoneyId}" @click="chooseSearch(item.id)">
-                    
+
                     {{item.value}}
                 </li>
             </ul>
@@ -13,7 +13,7 @@
         <!--金额手动输入-->
         <div class="recharge-input">
             <span class="recharge-label">金额（元）</span>
-            <input type="number" placeholder-style="color:#cccccc" placeholder="请输入金额">
+            <input type="number" @focus="focus" v-model="inputMoney" placeholder-style="color:#cccccc" placeholder="请输入金额">
         </div>
         <p class="recharge-mes">
             点击立即充值即表示您已阅读并同意<span class="recharge-pro">《充值协议》</span>
@@ -34,57 +34,112 @@
                     {value: '200元',id: 200},
                     {value: '1000元',id: 1000},
                 ],
-                chooseMoneyId: 100
+                chooseMoneyId: 100,
+                userCode: '',
+                userInfo: '',
+                inputMoney: '',
             };
         },
         onShow() {
-
-
+            this.getUserInfo()
+            this.wxLogin()
         },
         onUnload() {
-
+            this.clearMes();
         },
         methods: {
+            clearMes() {
+                this.inputMoney = '';
+                this.chooseMoneyId = 100;
+                this.userCode = '';
+                this.userInfo = '';
+            },
+            // 获取用户信息
+            getUserInfo() {
+                var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
+                if (userInfo) {
+                    this.userInfo = userInfo;
+                }
+            },
+            //获取用户的code
+            wxLogin: function() {
+                wx.login({
+                    success: res => {
+                        this.userCode= res.code;
+                    }
+                });
+            },
             goToBalanceDetail() {
                 wx.navigateTo({
                     url: '/pages/balanceDetail/main'
                 })
             },
+            focus() {
+                this.chooseMoneyId = 0;
+            },
             chooseSearch(id) {
                 this.chooseMoneyId = id;
             },
             rechargeBtn() {
-                const data = {"code": 0, "data": {"timeStamp": "1545722518", "paySign": "FE09968E188784978C0E82A69027E12A", "nonceStr": "EPaiGUgjOikdQkPr", "package": "prepay_id=wx25152158585314bace2b84392992484660"}}
-                wx.requestPayment({
-                    timeStamp: data.data.timeStamp,
-                    nonceStr: data.data.nonceStr,
-                    package: data.data.package,
-                    signType: 'MD5',
-                    paySign: data.data.paySign,
-                    success(res) {
-                        
-                        console.log(res);
-                    },
-                    fail(res) {
-                        
-                        console.log(res);
+                const self = this;
+                wx.login({
+                    success: response => {
+                        const reqData = {
+                            fee: this.inputMoney ? this.inputMoney*100 : this.chooseMoneyId*100,
+                            code: response.code,
+                            user_no: this.userInfo.user_no,
+                        }
+                        wx.request({
+                            url: `${process.env.BASE_URL}/chat_pay`,
+                            data: reqData, //传参
+                            method: 'post',
+                            header: {
+                                'content-type': 'application/x-www-form-urlencoded',
+                                'Authorization': self.userInfo.Authorization
+                            }, // 设置请求的 header
+                            success: function(res) {
+                                console.log(res)
+                                if(res.data.code == 0) {
+                                    const data = res.data;
+                                    wx.requestPayment({
+                                        timeStamp: data.data.timeStamp,
+                                        nonceStr: data.data.nonceStr,
+                                        package: data.data.package,
+                                        signType: 'MD5',
+                                        paySign: data.data.paySign,
+                                        success(res) {
+                                            console.log(res);
+                                            wx.request({
+                                                url: `${process.env.BASE_URL}/user_info`,
+                                                data: {
+                                                    user_no: self.userInfo.user_no,
+                                                }, //传参
+                                                method: 'get',
+                                                header: {
+                                                    Authorization: self.userInfo.Authorization
+                                                }, // 设置请求的 header
+                                                success: function(userInfo) {
+                                                    if(userInfo.data.code == 0) {
+                                                        // 存储用户信息
+                                                        let userMes = userInfo.data.data;
+                                                        userMes.Authorization = self.userInfo.Authorization;
+                                                        wx.setStorageSync('userInfo', JSON.stringify(userMes))
+                                                    }
+                                                },
+                                            })
+                                        },
+                                        fail(res) {
+                                            console.log(res);
+                                        }
+                                    })
+                                } else {
+
+                                }
+                            },
+                        })
                     }
-                })
-                // wx.requestPayment({
-                //     timeStamp: '1545722168',
-                //     nonceStr: 'oPBs7gLjSNz4VwgH',
-                //     package: 'wx25151609024338e8c5830d540211578460',
-                //     signType: 'MD5',
-                //     paySign: '15E8F8496A253C7F1817AC4F1B3EB3C9',
-                //     success(res) {
-                        
-                //         console.log(res);
-                //     },
-                //     fail(res) {
-                        
-                //         console.log(res);
-                //     }
-                // })
+                });
+
             }
         }
     };

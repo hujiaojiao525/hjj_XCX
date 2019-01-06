@@ -16,18 +16,6 @@
                 @blur="onBlur(1)" />
             <span class="clear-btn" v-show="!!telNumber && telNumberFocused" @click="onClear(1)">x</span>
         </div>
-        <div class="input-wrapper top-margin">
-            <span class="label-text">图形验证码</span>
-            <input
-                class="inputbox"
-                type="text"
-                v-model.trim="authCode"
-                maxlength="6"
-                placeholder="请输入验证码"
-                placeholder-class="placeholder"
-                adjust-position=true />
-            <img class="captcha" :src="captchaUrl" @click="refresh">
-        </div>
         <div class="input-wrapper top-margin positionR">
             <span class="label-text">短信验证码</span>
             <input
@@ -58,16 +46,10 @@
             return {
                 openType: null,
                 telNumber: "", //手机号
-                authCode: "", //图片验证码
-                imageKey: "", //图像验证码key
-                captchaUrl: "", //图片验证码的路径
                 securityCode: "", //短信验证码
                 getCodeText: "获取验证码", //验证码获取
                 telNumberFocused: true,
                 passwordFocused: false,
-                clientType: "", //设备类型 0:Android,1:IOS,4:PC,5:H5 ,
-                type:"", //1 登录 10修改手机号 11绑定手机号 ,
-                onlineId:"",
                 userCode:"",
                 phoneLogin:false,
             };
@@ -75,11 +57,11 @@
         computed: {
             //登录按钮禁用
             disabled() {
-                return(!this.telNumber || !this.securityCode || !this.authCode);
+                return(!this.telNumber || !this.securityCode);
             },
             //获取验证码禁用
             verCodeC() {
-                return(!this.telNumber || !this.authCode);
+                return(!this.telNumber);
             },
         },
         onUnload(){
@@ -87,8 +69,6 @@
             sec = 59;
         },
         mounted() {
-            this.refresh();//刷新验证码
-            this.getStorage();
             this.clearText();//进登录页面清楚登录数据
             this.wxLogin();
         },
@@ -105,7 +85,6 @@
             clearText() {
                 var self=this;
                 self.telNumber=""; //手机号
-                self.authCode=""; //图片验证码
                 self.securityCode=""; //短信验证码
                 self.getCodeText = '获取验证码';
             },
@@ -136,18 +115,6 @@
                 }
                 return true;
             },
-            //图片验证码不能为空
-            emptyAuthCode() {
-                var self = this;
-                if(self.authCode == "" || self.authCode == undefined) {
-                    wx.showToast({
-                        title: "请输入图片验证码",
-                        icon: "none"
-                    });
-                    return false;
-                }
-                return true;
-            },
             //短信验证码不能为空
             emptySecurityCode() {
                 var self = this;
@@ -159,20 +126,6 @@
                     return false;
                 }
                 return true;
-            },
-            // 刷新验证码
-            refresh() {
-                wx.request({
-                    url: `${process.env.BASE_URL}/OpenPlatform/Login/AppCreateImage`,
-                    success: res => {
-                        const {
-                            ImageKey,
-                            ImageByte
-                        } = res.data.data;
-                        this.captchaUrl = `data:image/jpeg;base64,${ImageByte}`;
-                        this.imageKey = ImageKey;
-                    }
-                });
             },
             // 清除输入的内容
             onClear(type) {
@@ -203,22 +156,6 @@
                     this.passwordFocused = bol;
                 }
             },
-            //获取设备的系统
-            getsystem() {
-                var self = this;
-                wx.getSystemInfo({
-                    success: function success(res) {
-                        var system = res.system;
-                        if(system.indexOf("iOS") != -1) {
-                            self.clientType = 1;
-                        }
-                        if(system.indexOf("Android") != -1) {
-                            self.clientType = 0;
-                        }
-
-                    }
-                });
-            },
             //获取验证码倒计时
             verifyBtn() {
                 var self = this;
@@ -245,127 +182,128 @@
                 if(!self.telNumberV()) {
                     return false
                 } //手机号验证
-                if(!self.emptyAuthCode()) {
-                    return false
-                } //图片验证码非空
-                self.getsystem(); //获取设备
                 var useInfo = {
-                    phone: self.telNumber, //手机号
-                    imgcode: self.authCode, //图片验证码
-                    imgKey: self.imageKey, //图像验证码key
-                    clientType: self.clientType, //设备类型 0:Android,1:IOS,4:PC,5:H5 ,
-                    type: self.type, //1 登录 10修改手机号 11绑定手机号 ,
+                    mobile_no: self.telNumber, //手机号
                 }
                 wx.request({
-                    url: `${process.env.BASE_URL}/api/ValuaLogin/SendMsg`,
+                    url: `${process.env.BASE_URL}/sms`,
                     data: useInfo, //传参
-                    method: 'post',
+                    method: 'get',
                     header: {
-                        'content-type': 'application/json'
                     }, // 设置请求的 header
                     success: function(res) {
-                        var msg = res.data.msg;
+                        var msg = res.data.txt;
                         if(res.data.code == 0) {
                             wx.showToast({
                                 title: "验证码已发送，请注意查收",
                                 icon: "none"
                             });
                             self.verifyBtn(); //验证码倒计时
-                        }
-                        if(res.data.code != 0) {
+                        } else {
                             wx.showToast({
                                 title: msg,
                                 icon: "none"
                             });
                         }
-                        if(res.data.code==-8){
-                            self.refresh();
-                        }
-                        console.log(res);
                     },
                     fail() {
                         wx.showToast({
-                            title: 网络错误,
+                            title: '网络错误',
                             icon: "none"
                         });
                     }
                 })
             },
-            //获取onlineId
-            getStorage() {
-                var me = this;
-                var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
-                if (userInfo) {
-                    me.onlineId =userInfo.onlineId;
-                }
-            },
             // 点击登录按钮
             onBtnClick() {
                 var self = this;
+                let Authorization = '';
                 if(!self.telNumberV()) {
                     return false
                 } //手机号验证
-                if(!self.emptyAuthCode()) {
-                    return false
-                } //图片验证码非空
                 if(!self.emptySecurityCode()) {
                     return false
                 } //短信验证码非空
-                self.getStorage();
                 var useInfo = {
-                    phone: self.telNumber, //手机号
-                    imgcode: self.authCode, //图片验证码
-                    imgKey: self.imageKey, //图像验证码key
-                    phonecode:self.securityCode, //手机验证码,
-                    clientType: self.clientType, //设备类型 0:Android,1:IOS,
-                    type: self.type, //1 登录 10修改手机号 11绑定手机号 ,
-                    code:self.userCode,
+                    mobile_no: self.telNumber, //手机号
+                    code: self.securityCode, //手机验证码,
                 };
                 wx.request({
-                    url: `${process.env.BASE_URL}/api/ValuaLogin/MobileLogin`,
+                    url: `${process.env.BASE_URL}/sms`,
                     data: useInfo, //传参
                     method: 'post',
                     header: {
-                        onlineId: self.onlineId,
+                        'content-type': 'application/x-www-form-urlencoded',
                     }, // 设置请求的 header
                     success: function(res) {
+                        var msg = res.data.txt;
                         if(res.data.code == 0) {
-                            if(number(self.type) === 1){
-                                var userInfo=JSON.stringify(res.data.data);
-                                wx.setStorage({
-                                    key: 'userInfo',
-                                    data: userInfo,
-                                });
-                            } else {
-                                var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
-                                if (userInfo) {
-                                    userInfo.userMobile =self.telNumber;
-                                    var userInfo=JSON.stringify(userInfo);
-                                        wx.setStorage({
-                                            key: 'userInfo',
-                                            data: userInfo,
+                            wx.request({
+                                url: `${process.env.BASE_URL}/user_login`,
+                                data: {
+                                    mobile_no: self.telNumber,
+                                }, //传参
+                                method: 'post',
+                                header: {
+                                    'content-type': 'application/x-www-form-urlencoded'
+                                }, // 设置请求的 header
+                                success: function(loginRes) {
+                                    console.log(loginRes)
+                                    if(loginRes.data.code == 0) {
+                                        Authorization = loginRes.header.Authorization;
+                                        // 登录成功  请求获取用户信息的接口
+                                        wx.request({
+                                            url: `${process.env.BASE_URL}/user_info`,
+                                            data: {
+                                                user_no: loginRes.data.data.user_no,
+                                            }, //传参
+                                            method: 'get',
+                                            header: {
+                                                Authorization: Authorization
+                                            }, // 设置请求的 header
+                                            success: function(userInfo) {
+                                                if(userInfo.data.code == 0) {
+                                                    console.log('用户信息获取成功')
+                                                    // 存储用户信息
+                                                    let userMes = userInfo.data.data;
+                                                    userMes.Authorization = Authorization;
+                                                    wx.setStorageSync('userInfo', JSON.stringify(userMes))
+                                                    // 返回到我的页面
+                                                    wx.navigateBack({
+                                                        delta: 1
+                                                    })
+                                                } else {
+                                                    wx.showToast({
+                                                        title: '用户信息获取失败',
+                                                        icon: "none"
+                                                    });
+                                                }
+                                            },
+                                        })
+
+                                    } else {
+                                        wx.showToast({
+                                            title: '登录失败',
+                                            icon: "none"
                                         });
-                                        wx.setStorage({
-                                            key: "alreadyLogin",
-                                            data: true
-                                        });
-                               }
-                            }
-                            }
-                        if(res.data.code!=0){
+                                    }
+                                },
+                            })
+                        } else {
                             wx.showToast({
-                                title: res.data.msg,
+                                title: msg,
                                 icon: "none"
                             });
                         }
-                        if(res.data.code==-7){
-                            self.refresh();
-                        }
-                        if(res.data.code==-8){
-                            self.refresh();
-                        }
                     },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
                 })
+
             },
         }
     };

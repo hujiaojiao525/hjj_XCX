@@ -1,6 +1,6 @@
 module.exports = {
     NODE_ENV: '"production"',
-    BASE_URL: '"https://uniapi.cheyipai.com"',
+    BASE_URL: '"https://cdz.0762ld.com"',
     MAPI_URL: '"https://mapi.cheyipai.com"',
     Monitor:'"https://monitor.cheyipai.com/"',
     SOUCHE_URL: '"https://wechat.souche.com"',
