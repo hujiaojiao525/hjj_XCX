@@ -131,7 +131,8 @@
                 if (!this.isLogin) {
                     // 去登录
                     wx.navigateTo({
-                        url: '/pages/loginPay/main'
+                        // url: '/pages/loginPay/main'
+                        url: '/pages/phoneLogin/main'
                     })
                     return;
                 }
@@ -143,7 +144,8 @@
                 if (!this.isLogin) {
                     // 去登录
                     wx.navigateTo({
-                        url: '/pages/loginPay/main'
+                        // url: '/pages/loginPay/main'
+                        url: '/pages/phoneLogin/main'
                     })
                     return;
                 }

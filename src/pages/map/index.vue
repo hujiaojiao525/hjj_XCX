@@ -116,7 +116,10 @@
             }
         }
     ];
+    import store from '../vuex/store';
+
     export default {
+        store,
         data() {
             return {
                 editPop: false,
@@ -200,6 +203,11 @@
                     success(res) {
                         console.log(res);
                         console.log(JSON.stringify(res))
+                        // 扫码成功  进入message页面
+                        wx.setStorageSync('scanResult', res.result)
+                        wx.navigateTo({
+                            url: '/pages/message/main'
+                        })
                     }
                 });
             },
