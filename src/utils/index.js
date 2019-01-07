@@ -35,16 +35,30 @@ export function toast(title, duration = 1500) {
 }
 
 
-//获取当前页面的参数
-export function pageUrl() {
-	const uRl = getCurrentPages();
-	const pageUrl = uRl[uRl.length - 1].options;
-	return pageUrl
-}
 
 //获取userInfo
 export function getUserInfo(){
     var me = this;
     var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
     return userInfo;
+}
+
+//获取当前页面的参数
+export function pageUrl() {
+    const uRl = getCurrentPages();
+    const pageUrl = uRl[uRl.length - 1].options;
+    return pageUrl
+}
+//页面返回
+export function pagegoBack(goWhere, jumpPage) {
+    
+    if(pageUrl().goWhere=="back"){
+        wx.navigateBack({
+            delta: 1
+        })
+    }if(pageUrl().goWhere=="jump"){
+        wx.redirectTo({
+            url: '/pages/'+pageUrl().jumpPage+'/main',
+        })
+    }
 }

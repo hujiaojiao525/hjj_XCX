@@ -65,7 +65,7 @@
                 </p>
             </li>
         </ul>
-        <div class="stop-btn">
+        <div class="stop-btn" @click="stopBtn">
             <p>停止并结算</p>
         </div>
     </div>
@@ -90,13 +90,21 @@
             bottomLine
         },
         onShow() {
-            // this.timer = setInterval(this.timerFun, 1000)
             this.beginTime = new Date().getTime();
+            // this.recordTime(496631);
         },
         onUnload() {
-
+            this.second = 0;
+            this.minute = 0;
+            this.hour = 0;
+            this.showTime = '00:00:00';
+            this.beginTime = '';
         },
         methods: {
+            // 停止结算
+            stopBtn() {
+
+            },
             timerFun() {
                 const self = this;
                 let second=0, minute=0, hour=0;
@@ -124,24 +132,17 @@
                 }
                 this.showTime = hour+':'+minute+':'+second
                 console.log(hour+'时'+minute+'分'+second+'秒')
-                // console.log(self.hour+'时'+self.minute+'分'+self.second+'秒')
             },
             recordTime(mss) {
                 var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
                 var seconds = parseInt((mss % (1000 * 60)) / 1000);
-                
-                // if (hours < 10) {
-                //     hours = '0' + hours;
-                // }
-                // if (minutes < 10) {
-                //     minutes = '0' + minutes;
-                // }
-                // if (seconds < 10) {
-                //     seconds = '0' + seconds;
-                // }
-                console.log(days + " 天 " + hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ")
-                return days + " 天 " + hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
+                console.log(hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ")
+                this.second = seconds
+                this.minute = minutes
+                this.hour = hours
+                this.timer = setInterval(this.timerFun, 1000)
+                // return hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
             },
             changeTab(id) {
                 this.chooseId = id;

@@ -39,7 +39,7 @@
 <script>
     let sec = 59;
     let secTimer=null;
-    import { toast } from "utils";
+    import { toast, pagegoBack } from "utils";
 
     export default {
         data() {
@@ -269,9 +269,7 @@
                                                     userMes.Authorization = Authorization;
                                                     wx.setStorageSync('userInfo', JSON.stringify(userMes))
                                                     // 返回到我的页面
-                                                    wx.navigateBack({
-                                                        delta: 1
-                                                    })
+                                                    pagegoBack();
                                                 } else {
                                                     wx.showToast({
                                                         title: '用户信息获取失败',

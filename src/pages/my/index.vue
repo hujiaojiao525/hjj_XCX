@@ -124,7 +124,8 @@
             },
             goToLogin() {
                 wx.navigateTo({
-                    url: '/pages/loginPay/main'
+                    // url: '/pages/loginPay/main'
+                    url: '/pages/phoneLogin/main?goWhere=back',
                 })
             },
             goToRecharge() {
@@ -132,7 +133,7 @@
                     // 去登录
                     wx.navigateTo({
                         // url: '/pages/loginPay/main'
-                        url: '/pages/phoneLogin/main'
+                        url: '/pages/phoneLogin/main?goWhere=jump&jumpPage=recharge'
                     })
                     return;
                 }
@@ -145,7 +146,7 @@
                     // 去登录
                     wx.navigateTo({
                         // url: '/pages/loginPay/main'
-                        url: '/pages/phoneLogin/main'
+                        url: '/pages/phoneLogin/main?goWhere=jump&jumpPage=order'
                     })
                     return;
                 }

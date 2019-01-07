@@ -29,32 +29,150 @@
             <div class="line-top"></div>
             <div class="charge-text">
                 <p>正在启动充电操作</p>
-                <p>可能需要<span class="red">27</span>秒的时间，请勿关闭</p>
+                <p>可能需要<span class="red">{{countDown}}</span>秒的时间，请勿关闭</p>
             </div>
             <div class="line-bottom"></div>
         </div>
+        <pop text="启动失败，请检查枪是否插好"
+             :isShowLayerPop="isShowLayerPop"
+             :oneBtn="true"
+             @clickOnly="clickOnly"
+             onlyBtnText="确定"></pop>
     </div>
 </template>
 <script>
     import store from "../vuex/store";
     import bottomLine from "../../components/bottomLine";
+    import pop from '../../components/pop'
 
     export default {
         store,
         data() {
-            return {};
+            return {
+                parData: null,
+                calcno: null,
+                timer: null,
+                countDown: 60,
+                isShowLayerPop: false
+            };
         },
         components: {
-            bottomLine
+            bottomLine,
+            pop
         },
         onShow() {
-
-
+            this.requestFun();
+            this.countDownFun();
         },
         onUnload() {
-
+            this.parData = null;
+            this.calcno = null;
+            this.timer = null;
+            this.countDown = 60;
+            this.isShowLayerPop = false;
+        },
+        onLoad(res) {
+            console.log(res)
+            this.parData = res;
         },
         methods: {
+            clickOnly() {
+                // 返回到立即充电页面
+                clearInterval(this.timer);
+                wx.navigateTo({
+                    url: "/pages/message/main"
+                });
+            },
+            countDownFun() {
+                const self = this;
+                if(self.timer != null) {
+                    clearInterval(self.timer);
+                }
+                self.timer = setInterval(function(){
+                    if (self.countDown == 0) {
+                        clearInterval(self.timer);
+                        self.isShowLayerPop = true;
+                        return;
+                    }
+                    self.countDown--;
+                    // 请求接口
+                    self.requestCharge();
+                },1000)
+            },
+            requestFun() {
+                const reqData = JSON.parse(this.parData.reqData);
+                const Authorization = this.parData.Authorization;
+                const self = this;
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge`,
+                    data: reqData, //传参
+                    method: 'post',
+                    header: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'Authorization': Authorization
+                    }, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            console.log(res)
+                            self.calcno = res.data.data.calcno;
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
+            },
+            requestCharge() {
+                const reqData = {
+                    calcno: this.calcno,
+                    user_no: JSON.parse(this.parData.reqData).user_no
+                }
+                const Authorization = this.parData.Authorization;
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge_status`,
+                    data: reqData, //传参
+                    method: 'post',
+                    header: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'Authorization': Authorization
+                    }, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            console.log(res)
+                            if (res.data.code.status === 1) {
+                                // 可以充电 去充电详情页面
+                                clearInterval(self.timer);
+                                wx.navigateTo({
+                                    url: "/pages/chargeProgress/main"
+                                });
+                            } else if (res.data.code.status === 2) {
+                                // 不可以充电 去立即充电页面
+                                clearInterval(self.timer);
+                                self.isShowLayerPop = true;
+                            }
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
+            },
             changeTab(id) {
                 this.chooseId = id;
             },

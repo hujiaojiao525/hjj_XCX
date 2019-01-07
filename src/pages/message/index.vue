@@ -3,22 +3,25 @@
         <div class="mes-top">
             <div class="mes-title">
                 <p>{{requestData.charge_name}}</p>
-                <span>0755-67676767</span>
+                <span>0762-3989588</span>
             </div>
             <div class="mes-content">
                 <div class="content-left">
-                    <p>120wk充电桩凯悦酒店</p>
+                    <p>{{requestData.charge_name}}</p>
                     <p>{{requestData.charge_address}}</p>
                 </div>
-                <div class="content-right">
+                <!-- <div class="content-right">
                     <span>616.78m</span>
-                </div>
+                </div> -->
             </div>
             <div class="span-mes">
                 桩体信息：
                 <span>120kw</span>
-                <span>国标</span>
-                <span>直流快充</span>
+                <span v-if="requestData.charge_api === 0">国标2011</span>
+                <span v-if="requestData.charge_api === 1">国标2015</span>
+                <span v-if="requestData.charge_method === 0">直流快充</span>
+                <span v-if="requestData.charge_method === 1">交流快充</span>
+                <span v-if="requestData.charge_method === 2">交流慢充</span>
             </div>
             <div class="use-content">
                 <p>
@@ -36,14 +39,18 @@
                 桩体编号：<span>请确保充电枪已插入电车</span>
             </p>
             <div class="choose-box">
-                <div v-for="(item,index) in chooseType" :key="index"
-                    :class="{chooseStatus: item.id === chooseId}" @click="chooseSearch(item.id)">
-                    <span>{{item.num}}</span>
-                    <span>{{item.value}}</span>
+                <div :class="{chooseStatus: 1 === chooseId}" @click="chooseSearch(1, requestData.stake_1)">
+                    <span>A</span>
+                    <span>{{stake_A}}</span>
+                </div>
+
+                <div :class="{chooseStatus: 2 === chooseId}" @click="chooseSearch(2, requestData.stake_2)">
+                    <span>B</span>
+                    <span>{{stake_B}}</span>
                 </div>
             </div>
         </div>
-        <div class="mes-btn">
+        <div class="mes-btn" @click="chargeBtn">
             立即充电
         </div>
     </div>
@@ -51,16 +58,17 @@
 <script>
     import store from '../vuex/store';
     import bottomLine from '../../components/bottomLine'
+
     export default {
         store,
         data() {
             return {
-                chooseType: [
-                    {num: 'A', value: '充电中',id: 1},
-                    {num: 'B', value: '已插枪',id: 2},
-                ],
-                chooseId: '',
+                chooseId: 1,
                 requestData: null,
+                stake_A: '',
+                stake_B: '',
+                stake_no: '',
+                userInfo: '',
             };
         },
         components: {
@@ -73,12 +81,15 @@
 
         },
         methods: {
-            chooseSearch(id) {
+            chooseSearch(id, no) {
                 this.chooseId = id;
+                this.stake_no = no;
             },
             getStorage() {
-                // scanResult
                 var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
+                if (userInfo) {
+                    this.userInfo = userInfo;
+                }
                 var scanResult = wx.getStorageSync('scanResult');
                 this.requestFun(userInfo, scanResult)
             },
@@ -88,14 +99,12 @@
                 /*
                 * charge_type 电桩类型(0:对外开发;1:不对外开发;2:个人桩)
                     ground_lock 智能地锁(0:有地锁:1:车位空闲)
-                    charge_method  0:直流快充;1:交流快充;2:交流慢充
                     operation_type 0:自营;1:非自营;2:互联互通;3:个人共享;4:个人共享;5:个人专用
                     depot 停车场(0:露天;1:非露天;2:地上;3:地下)
                     parking_fee 停车费(0:免费;1:收费)
 
                     charge_station_status电桩状态(0:空闲)
                     business_hours 营业时间(0:24小时;1:营业中;2:时间不确定)
-                    charge_api 充电接口(0:国标2011;1:国标2015)
                     auxiliary_source 辅源类型(0:12v;1:24v)
                     voltage  电压(0:200v;1:250v;2:280v;3:300v;4:350v;5:450v;6:500v;7:700v;8:750v)
                     stake_2 枪号2
@@ -105,6 +114,8 @@
 
                     stake_2_status 枪号2状态
                     spear_no 桩号
+
+                    请求接口/charge, post请求, 请求参数 :"stake_no", "spear_no", "qr_code", "user_no"
                 *
                 * */
 
@@ -112,8 +123,8 @@
                     "id":1,
                     "auxiliary_source":0,
                     "business_hours":0,
-                    "charge_api":0,
-                    "charge_method":0,
+                    "charge_api":0, // (0:国标2011;1:国标2015)
+                    "charge_method":0, // 0:直流快充;1:交流快充;2:交流慢充
                     "charge_name":"鼎天新能源 充电桩",
                     "charge_station_status":0,
                     "charge_type":0,
@@ -125,7 +136,7 @@
                     "qr_code":"0000000000000001",
                     "spear_no":"10001",
                     "stake_1":1,
-                    "stake_1_status":0,
+                    "stake_1_status":0, // 0：空闲；1：充电中，2：充电结束 3:故障
                     "stake_2":2,
                     "stake_2_status":0,
                     "update_time":"2019-01-06 17:09:28",
@@ -146,6 +157,9 @@
                     success: function(res) {
                         if(res.data.code == 0) {
                             self.requestData = res.data.data;
+                            self.stake_A = self.returnStatus(res.data.data.stake_1_status);
+                            self.stake_B = self.returnStatus(res.data.data.stake_2_status);
+                            self.stake_no = res.data.data.stake_1;
                         } else {
                             wx.showToast({
                                 title: '信息有误',
@@ -161,24 +175,57 @@
                     }
                 })
             },
+            returnStatus(num) {
+                // 0：空闲；1：  充电中，2：  充电结束 3:  故障
+                let status = '';
+                if (num === 0) {
+                    status = '空闲';
+                } else if (num === 1) {
+                    status = '充电中';
+                } else if (num === 2) {
+                    status = '充电结束';
+                } else if (num === 3) {
+                    status = '故障';
+                }
+                return status;
+            },
             changeTab(id) {
                 this.chooseId = id;
-            },
-            goToPowerDetail() {
-                wx.navigateTo({
-                    url: "/pages/powerDetail/main"
-                });
-            },
-            goToRecharge() {
-                wx.navigateTo({
-                    url: "/pages/recharge/main"
-                });
             },
             // 去首页
             goToHome() {
                 wx.navigateTo({
                     url: "/pages/map/main"
                 });
+            },
+            // 立即充电
+            chargeBtn() {
+                if (!this.userInfo) {
+                    // 去登录
+                    wx.navigateTo({
+                        url: '/pages/phoneLogin/main?goWhere=back'
+                    })
+                    return;
+                }
+                //"stake_no", "spear_no", "qr_code", "user_no"
+                const stake_no = this.stake_no;
+                const spear_no = this.requestData.spear_no;
+                const qr_code = this.requestData.spear_no;
+                const user_no = this.userInfo.user_no
+                const Authorization = this.userInfo.Authorization
+                const reqData = {
+                    stake_no: stake_no,
+                    spear_no: spear_no,
+                    qr_code: qr_code,
+                    user_no: user_no
+                }
+
+                // wx.navigateTo({
+                //     url: "/pages/chargeWait/main?stake_no="+stake_no+"&spear_no="+spear_no+"&qr_code="+qr_code+"&user_no="+user_no+"&Authorization="+Authorization
+                // })
+                wx.navigateTo({
+                    url: "/pages/chargeWait/main?reqData=" + JSON.stringify(reqData) + "&Authorization="+Authorization
+                })
             },
         }
     };
