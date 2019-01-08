@@ -149,8 +149,8 @@
                 wx.request({
                     url: `${process.env.BASE_URL}/charge`,
                     data: {
-                        // qr_code: scanResult.replace(/\s/g,"")
-                        qr_code: '0000000000000001'
+                        qr_code: scanResult.replace(/\s/g,"")
+                        // qr_code: '0000000000000001'
                     }, //传参
                     method: 'get',
                     header: header, // 设置请求的 header

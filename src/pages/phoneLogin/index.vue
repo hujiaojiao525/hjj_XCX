@@ -192,7 +192,6 @@
                     header: {
                     }, // 设置请求的 header
                     success: function(res) {
-                        var msg = res.data.txt;
                         if(res.data.code == 0) {
                             wx.showToast({
                                 title: "验证码已发送，请注意查收",
@@ -201,7 +200,7 @@
                             self.verifyBtn(); //验证码倒计时
                         } else {
                             wx.showToast({
-                                title: msg,
+                                title: res.data.txt ? res.data.txt : '信息有误',
                                 icon: "none"
                             });
                         }
@@ -236,7 +235,6 @@
                         'content-type': 'application/x-www-form-urlencoded',
                     }, // 设置请求的 header
                     success: function(res) {
-                        var msg = res.data.txt;
                         if(res.data.code == 0) {
                             wx.request({
                                 url: `${process.env.BASE_URL}/user_login`,
@@ -289,14 +287,14 @@
                             })
                         } else {
                             wx.showToast({
-                                title: msg,
+                                title: res.data.txt ? res.data.txt : '信息有误',
                                 icon: "none"
                             });
                         }
                     },
                     fail() {
                         wx.showToast({
-                            title: '网络错误',
+                            title: "网络错误",
                             icon: "none"
                         });
                     }
