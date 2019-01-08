@@ -81,10 +81,12 @@
 
         },
         methods: {
+            // 选择电桩
             chooseSearch(id, no) {
                 this.chooseId = id;
                 this.stake_no = no;
             },
+            // 初始化获取用户信息
             getStorage() {
                 var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
                 if (userInfo) {
@@ -93,6 +95,7 @@
                 var scanResult = wx.getStorageSync('scanResult');
                 this.requestFun(userInfo, scanResult)
             },
+            // 进入页面请求数据
             requestFun(userInfo, scanResult) {
                 let header = {};
                 const self = this;
@@ -175,6 +178,7 @@
                     }
                 })
             },
+            // 根据状态值返回对应的文案
             returnStatus(num) {
                 // 0：空闲；1：  充电中，2：  充电结束 3:  故障
                 let status = '';
@@ -188,9 +192,6 @@
                     status = '故障';
                 }
                 return status;
-            },
-            changeTab(id) {
-                this.chooseId = id;
             },
             // 去首页
             goToHome() {
@@ -219,7 +220,6 @@
                     qr_code: qr_code,
                     user_no: user_no
                 }
-
                 // wx.navigateTo({
                 //     url: "/pages/chargeWait/main?stake_no="+stake_no+"&spear_no="+spear_no+"&qr_code="+qr_code+"&user_no="+user_no+"&Authorization="+Authorization
                 // })

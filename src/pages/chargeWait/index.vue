@@ -49,11 +49,11 @@
         store,
         data() {
             return {
-                parData: null,
-                calcno: null,
-                timer: null,
-                countDown: 60,
-                isShowLayerPop: false
+                parData: null, // 上个页面带过的参数变量
+                calcno: null,  // 编号
+                timer: null, // 定时器
+                countDown: 60, // 倒计时时间
+                isShowLayerPop: false, // 启动失败的弹窗 
             };
         },
         components: {
@@ -72,10 +72,11 @@
             this.isShowLayerPop = false;
         },
         onLoad(res) {
-            console.log(res)
+            // 获取url上的参数
             this.parData = res;
         },
         methods: {
+            // 点击弹窗的确定按钮
             clickOnly() {
                 // 返回到立即充电页面
                 clearInterval(this.timer);
@@ -83,6 +84,7 @@
                     url: "/pages/message/main"
                 });
             },
+            // 倒计时方法
             countDownFun() {
                 const self = this;
                 if(self.timer != null) {
@@ -99,6 +101,7 @@
                     self.requestCharge();
                 },1000)
             },
+            // 进入页面的请求
             requestFun() {
                 const reqData = JSON.parse(this.parData.reqData);
                 const Authorization = this.parData.Authorization;
@@ -130,6 +133,7 @@
                     }
                 })
             },
+            // 倒计时的时候 刷新的请求
             requestCharge() {
                 const reqData = {
                     calcno: this.calcno,
@@ -173,14 +177,6 @@
                     }
                 })
             },
-            changeTab(id) {
-                this.chooseId = id;
-            },
-            goToPowerDetail() {
-                wx.navigateTo({
-                    url: "/pages/powerDetail/main"
-                });
-            }
         }
     };
 </script>
