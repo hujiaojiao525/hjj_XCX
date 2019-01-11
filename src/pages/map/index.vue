@@ -1,7 +1,7 @@
 <template>
     <div class="index-map">
         <!-- 顶部 -->
-        <div class="map-top">
+        <div class="map-top none">
             <div class="search-box" @click="goToSearch">
                 <image class="search-img" src="../../static/image/search.png"></image>
                 <span class="search-input">输入目的地/电站名</span>
@@ -125,7 +125,8 @@
                 editPop: false,
                 focus: false,
                 WinHeight: "",
-                markers: requestData,
+                // markers: requestData,
+                markers: [],
                 bottomHeight: "",
                 mapCtx: null,
                 isShowToast: true,
@@ -147,7 +148,8 @@
                 });
             });
             this.currentPos()
-            this.showToast()
+            // 暂时注释掉
+            // this.showToast() 
         },
         onReady: function(e) {
             this.mapCtx = wx.createMapContext("map");
@@ -218,8 +220,9 @@
                     success: function(res) {
                         console.log(res)
                         // 通过获取的经纬度进行请求数据
-                        let arr = that.setPos();
-                        that.markers = arr;
+                        // 暂时注释掉
+                        // let arr = that.setPos();
+                        // that.markers = arr;
                     }
                 });
             },
@@ -243,6 +246,7 @@
                     duration: 2000
                 })
             },
+            // 设置位置
             setPos() {
                 let markers = [];
                 for (let item of requestData) {
@@ -251,6 +255,7 @@
                 }
                 return markers;
             },
+            // 滑动地图结束的时候 请求方法
             regionchange(e) {
                 if (e.type == "end") {
                     this.getLngLat();
@@ -262,8 +267,9 @@
                     success: function(res) {
                         console.log(res);
                         // 通过获取的经纬度进行请求数据
-                        let arr = that.setPos()
-                        that.markers = arr;
+                        // 暂时注释掉
+                        // let arr = that.setPos()
+                        // that.markers = arr;
                     }
                 });
             },
@@ -289,7 +295,6 @@
                 setTimeout(function() {
                     self.focus = true;
                 }, 60);
-
             },
             // 关闭弹窗
             closePop() {
@@ -511,5 +516,9 @@
         transform: translate3d(-50%, -50%, 0);
         width: 45rpx;
         height: 80rpx;
+    }
+
+    .none{
+        display: none;
     }
 </style>

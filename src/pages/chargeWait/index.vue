@@ -54,6 +54,7 @@
                 timer: null, // 定时器
                 countDown: 60, // 倒计时时间
                 isShowLayerPop: false, // 启动失败的弹窗 
+                uid: '',
             };
         },
         components: {
@@ -62,24 +63,28 @@
         },
         onShow() {
             this.requestFun();
-            this.countDownFun();
         },
         onUnload() {
-            this.parData = null;
-            this.calcno = null;
-            this.timer = null;
-            this.countDown = 60;
-            this.isShowLayerPop = false;
+            this.clearData();
         },
         onLoad(res) {
             // 获取url上的参数
             this.parData = res;
         },
         methods: {
+            clearData() {
+                clearInterval(this.timer);
+                this.parData = null;
+                this.calcno = null;
+                this.timer = null;
+                this.countDown = 60;
+                this.isShowLayerPop = false;
+                this.uid = '';
+            },
             // 点击弹窗的确定按钮
             clickOnly() {
                 // 返回到立即充电页面
-                clearInterval(this.timer);
+                this.clearData();
                 wx.navigateTo({
                     url: "/pages/message/main"
                 });
@@ -87,6 +92,7 @@
             // 倒计时方法
             countDownFun() {
                 const self = this;
+                console.log(self.timer)
                 if(self.timer != null) {
                     clearInterval(self.timer);
                 }
@@ -103,6 +109,7 @@
             },
             // 进入页面的请求
             requestFun() {
+                console.log(this.parData)
                 const reqData = JSON.parse(this.parData.reqData);
                 const Authorization = this.parData.Authorization;
                 const self = this;
@@ -118,6 +125,9 @@
                         if(res.data.code == 0) {
                             console.log(res)
                             self.calcno = res.data.data.calcno;
+                            // self.calcno = 'calcno_201901111547188936137'
+                            self.uid = res.data.data.uid;
+                            self.countDownFun();
                         } else {
                             wx.showToast({
                                 title: '信息有误',
@@ -135,8 +145,10 @@
             },
             // 倒计时的时候 刷新的请求
             requestCharge() {
+                const self = this;
                 const reqData = {
                     calcno: this.calcno,
+                    uid: this.uid,
                     user_no: JSON.parse(this.parData.reqData).user_no
                 }
                 const Authorization = this.parData.Authorization;
@@ -150,12 +162,12 @@
                     }, // 设置请求的 header
                     success: function(res) {
                         if(res.data.code == 0) {
-                            console.log(res)
-                            if (res.data.code.status === 1) {
+                            console.log(res.data.data.status)
+                            if (res.data.data.status === 1) {
                                 // 可以充电 去充电详情页面
                                 clearInterval(self.timer);
-                                wx.navigateTo({
-                                    url: "/pages/chargeProgress/main"
+                                wx.redirectTo({
+                                    url: "/pages/chargeProgress/main?order_no="+res.data.data.order_no
                                 });
                             } else if (res.data.code.status === 2) {
                                 // 不可以充电 去立即充电页面

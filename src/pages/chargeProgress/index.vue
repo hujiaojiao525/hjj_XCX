@@ -83,7 +83,9 @@
                 hour: 0,
                 timer: null,
                 showTime: '00:00:00',
-                beginTime: ''
+                beginTime: '',
+                userInfo: null,
+                order_no: '',
             };
         },
         components: {
@@ -91,19 +93,104 @@
         },
         onShow() {
             this.beginTime = new Date().getTime();
+            this.getStorage();
             // this.recordTime(496631);
         },
+        onLoad(res) {
+            // 获取url上的参数
+            console.log(res)
+            this.order_no = res.order_no;
+            // this.order_no = '2019011115471904797641000113'
+        },
         onUnload() {
-            this.second = 0;
-            this.minute = 0;
-            this.hour = 0;
-            this.showTime = '00:00:00';
-            this.beginTime = '';
+            this.clearData();
         },
         methods: {
+            clearData() {
+                this.second = 0;
+                this.minute = 0;
+                this.hour = 0;
+                this.showTime = '00:00:00';
+                this.beginTime = '';
+            },
+            // 初始化获取用户信息
+            getStorage() {
+                var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
+                if (userInfo) {
+                    this.userInfo = userInfo;
+                }
+            },
             // 停止结算
             stopBtn() {
-
+                const reqData = {
+                    user_no: this.userInfo.user_no,
+                    order_no: this.order_no,
+                }
+                const Authorization = this.userInfo.Authorization;
+                // 停止接口
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge_end`,
+                    data: reqData, //传参
+                    method: 'post',
+                    header: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'Authorization': Authorization
+                    }, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            console.log(res)
+                            // 结账
+                            wx.request({
+                                url: `${process.env.BASE_URL}/charge_balance`,
+                                data: reqData, //传参
+                                method: 'post',
+                                header: {
+                                    'content-type': 'application/x-www-form-urlencoded',
+                                    'Authorization': Authorization
+                                }, // 设置请求的 header
+                                success: function(res) {
+                                    if(res.data.code == 0) {
+                                        console.log(res)
+                                        if (res.data.code.status === 1) {
+                                            // 可以充电 去充电详情页面
+                                            clearInterval(self.timer);
+                                            wx.navigateTo({
+                                                url: "/pages/chargeProgress/main"
+                                            });
+                                        } else if (res.data.code.status === 2) {
+                                            // 不可以充电 去立即充电页面
+                                            clearInterval(self.timer);
+                                            self.isShowLayerPop = true;
+                                        }
+                                    } else {
+                                        wx.showToast({
+                                            title: '信息有误',
+                                            icon: "none"
+                                        });
+                                    }
+                                },
+                                fail() {
+                                    wx.showToast({
+                                        title: '网络错误',
+                                        icon: "none"
+                                    });
+                                }
+                            })
+                            
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
             },
             timerFun() {
                 const self = this;
