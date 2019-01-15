@@ -215,6 +215,9 @@
                 this.chargeTimer = null;
                 this.successText = '成功支付100元';
                 this.isShowLayerPop = false;
+                clearInterval(this.timer);
+                clearInterval(this.payTimer);
+                clearInterval(this.chargeTimer);
             },
             clickOnly() {
                 clearInterval(this.payTimer);
