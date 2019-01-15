@@ -21,28 +21,28 @@
                 </div>
             </div>
         </div>
-        <ul class="progress-list">
+        <ul class="progress-list" v-if="requestData!=null">
             <li>
                 <h2>我的钱包</h2>
                 <p>29.98元</p>
             </li>
-            <li class="margin-bottom">
+            <!-- <li class="margin-bottom">
                 <h2>优惠券</h2>
                 <p>
                     无可用优惠券
                     <i class="iconfont icon-jiantou  right"></i>
                 </p>
-            </li>
+            </li> -->
             <li>
                 <h2>充电站</h2>
                 <p>
-                    北京市昌平区
+                    {{requestData.charge_adress}}
                 </p>
             </li>
             <li>
                 <h2>充电位</h2>
                 <p>
-                    392839284982424
+                    {{requestData.charge_no}}
                 </p>
             </li>
             <li>
@@ -57,13 +57,13 @@
                     直流充电
                 </p>
             </li>
-            <li class="margin-bottom">
+            <!-- <li class="margin-bottom">
                 <h2>车架号：未识别</h2>
                 <p>
                     关联车辆
                     <i class="iconfont icon-jiantou  right"></i>
                 </p>
-            </li>
+            </li> -->
         </ul>
         <div class="stop-btn" @click="stopBtn">
             <p>停止并结算</p>
@@ -86,6 +86,8 @@
                 beginTime: '',
                 userInfo: null,
                 order_no: '',
+                amount: '',
+                requestData: null,
             };
         },
         components: {
@@ -94,30 +96,89 @@
         onShow() {
             this.beginTime = new Date().getTime();
             this.getStorage();
-            // this.recordTime(496631);
+            
         },
         onLoad(res) {
             // 获取url上的参数
             console.log(res)
-            this.order_no = res.order_no;
-            // this.order_no = '2019011115471904797641000113'
+            // this.order_no = res.order_no;
+            this.order_no = '2019011115471904797641000113'
         },
         onUnload() {
             this.clearData();
         },
         methods: {
+            // 充电详情的接口
+            requestDetail() {
+                const self = this;
+                const reqData = {
+                    user_no: this.userInfo.user_no,
+                    order_no: this.order_no,
+                }
+
+                // {
+                //     'code': code, 
+                //     'data': {
+                //         "order_no":"",
+                //         "purchase":"", // 消费金额
+                //         "power":"",  // 电量（0.01KW/位）
+                //         "chargeTime":"", // 充电时间（分钟）
+                //         "balance":"",// 余额（分）
+                //         "soc":"", // 百分比
+                //         "voltage":"", // 电压（0.01V）
+                //         "cerrent":"",// 电流
+                //         "chargeState":"" // 充电状态0.空闲1充电中2充电结束3故障
+                //          "charge_adress"
+                //     }
+                // }
+                const Authorization = this.userInfo.Authorization;
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge_details`,
+                    data: reqData, //传参
+                    method: 'post',
+                    header: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'Authorization': Authorization
+                    }, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            const data = res.data.data;
+                            console.log(res)
+                            self.requestData = data;
+                            self.recordTime(data.chargeTime*60*1000);
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
+            },
             clearData() {
                 this.second = 0;
                 this.minute = 0;
                 this.hour = 0;
                 this.showTime = '00:00:00';
                 this.beginTime = '';
+                this.userInfo = null;
+                this.order_no = '';
+                this.amount = '';
+                this.requestData = null;
             },
             // 初始化获取用户信息
             getStorage() {
                 var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
                 if (userInfo) {
                     this.userInfo = userInfo;
+                    this.amount = userInfo.total_amount / 100;
+                    this.requestDetail();
                 }
             },
             // 停止结算
@@ -150,18 +211,7 @@
                                 }, // 设置请求的 header
                                 success: function(res) {
                                     if(res.data.code == 0) {
-                                        console.log(res)
-                                        if (res.data.code.status === 1) {
-                                            // 可以充电 去充电详情页面
-                                            clearInterval(self.timer);
-                                            wx.navigateTo({
-                                                url: "/pages/chargeProgress/main"
-                                            });
-                                        } else if (res.data.code.status === 2) {
-                                            // 不可以充电 去立即充电页面
-                                            clearInterval(self.timer);
-                                            self.isShowLayerPop = true;
-                                        }
+                                        
                                     } else {
                                         wx.showToast({
                                             title: '信息有误',

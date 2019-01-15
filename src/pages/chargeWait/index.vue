@@ -52,7 +52,7 @@
                 parData: null, // 上个页面带过的参数变量
                 calcno: null,  // 编号
                 timer: null, // 定时器
-                countDown: 60, // 倒计时时间
+                countDown: 100, // 倒计时时间
                 isShowLayerPop: false, // 启动失败的弹窗 
                 uid: '',
             };
@@ -77,7 +77,7 @@
                 this.parData = null;
                 this.calcno = null;
                 this.timer = null;
-                this.countDown = 60;
+                this.countDown = 100;
                 this.isShowLayerPop = false;
                 this.uid = '';
             },
