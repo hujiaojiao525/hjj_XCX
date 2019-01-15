@@ -68,6 +68,31 @@
         <div class="stop-btn" @click="stopBtn">
             <p>停止并结算</p>
         </div>
+        <!--结算中的loading-->
+        <div class="end-layer" v-show="isShowEndLayer">
+            <div class="spinner">
+                <div class="spinner-container container1">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+                <div class="spinner-container container2">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+                <div class="spinner-container container3">
+                    <div class="circle1"></div>
+                    <div class="circle2"></div>
+                    <div class="circle3"></div>
+                    <div class="circle4"></div>
+                </div>
+            </div>
+            <span>正在结算中</span>
+        </div>
+
     </div>
 </template>
 <script>
@@ -88,6 +113,7 @@
                 order_no: '',
                 amount: '',
                 requestData: null,
+                isShowEndLayer: false,
             };
         },
         components: {
@@ -96,7 +122,7 @@
         onShow() {
             this.beginTime = new Date().getTime();
             this.getStorage();
-            
+
         },
         onLoad(res) {
             // 获取url上的参数
@@ -117,7 +143,7 @@
                 }
 
                 // {
-                //     'code': code, 
+                //     'code': code,
                 //     'data': {
                 //         "order_no":"",
                 //         "purchase":"", // 消费金额
@@ -171,6 +197,7 @@
                 this.order_no = '';
                 this.amount = '';
                 this.requestData = null;
+                this.isShowEndLayer = false;
             },
             // 初始化获取用户信息
             getStorage() {
@@ -187,6 +214,7 @@
                     user_no: this.userInfo.user_no,
                     order_no: this.order_no,
                 }
+                const self = this;
                 const Authorization = this.userInfo.Authorization;
                 // 停止接口
                 wx.request({
@@ -200,6 +228,8 @@
                     success: function(res) {
                         if(res.data.code == 0) {
                             console.log(res)
+                            // isShowEndLayer 正在结算中的layer显示
+                            self.isShowEndLayer = true;
                             // 结账
                             wx.request({
                                 url: `${process.env.BASE_URL}/charge_balance`,
@@ -211,7 +241,7 @@
                                 }, // 设置请求的 header
                                 success: function(res) {
                                     if(res.data.code == 0) {
-                                        
+
                                     } else {
                                         wx.showToast({
                                             title: '信息有误',
@@ -226,7 +256,7 @@
                                     });
                                 }
                             })
-                            
+
                         } else {
                             wx.showToast({
                                 title: '信息有误',
@@ -387,5 +417,156 @@
         color: #fff;
         background: #4DAADB;
         margin: 50rpx auto;
+    }
+    .end-layer .spinner {
+        width:120rpx;
+        height:120rpx;
+        position:absolute;
+        left: 50%;
+        margin-left: -60rpx;
+        top: 50%;
+        margin-top: -100rpx;
+    }
+
+    .container1 > div, .container2 > div, .container3 > div {
+        width: 6px;
+        height: 6px;
+        background-color: #fff;
+
+        border-radius: 100%;
+        position: absolute;
+        -webkit-animation: bouncedelay 1.2s infinite ease-in-out;
+        animation: bouncedelay 1.2s infinite ease-in-out;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+    }
+
+    .spinner .spinner-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .container2 {
+        -webkit-transform: rotateZ(45deg);
+        transform: rotateZ(45deg);
+    }
+
+    .container3 {
+        -webkit-transform: rotateZ(90deg);
+        transform: rotateZ(90deg);
+    }
+
+    .circle1 {
+        top: 0;
+        left: 0;
+    }
+
+    .circle2 {
+        top: 0;
+        right: 0;
+    }
+
+    .circle3 {
+        right: 0;
+        bottom: 0;
+    }
+
+    .circle4 {
+        left: 0;
+        bottom: 0;
+    }
+
+    .container2 .circle1 {
+        -webkit-animation-delay: -1.1s;
+        animation-delay: -1.1s;
+    }
+
+    .container3 .circle1 {
+        -webkit-animation-delay: -1.0s;
+        animation-delay: -1.0s;
+    }
+
+    .container1 .circle2 {
+        -webkit-animation-delay: -0.9s;
+        animation-delay: -0.9s;
+    }
+
+    .container2 .circle2 {
+        -webkit-animation-delay: -0.8s;
+        animation-delay: -0.8s;
+    }
+
+    .container3 .circle2 {
+        -webkit-animation-delay: -0.7s;
+        animation-delay: -0.7s;
+    }
+
+    .container1 .circle3 {
+        -webkit-animation-delay: -0.6s;
+        animation-delay: -0.6s;
+    }
+
+    .container2 .circle3 {
+        -webkit-animation-delay: -0.5s;
+        animation-delay: -0.5s;
+    }
+
+    .container3 .circle3 {
+        -webkit-animation-delay: -0.4s;
+        animation-delay: -0.4s;
+    }
+
+    .container1 .circle4 {
+        -webkit-animation-delay: -0.3s;
+        animation-delay: -0.3s;
+    }
+
+    .container2 .circle4 {
+        -webkit-animation-delay: -0.2s;
+        animation-delay: -0.2s;
+    }
+
+    .container3 .circle4 {
+        -webkit-animation-delay: -0.1s;
+        animation-delay: -0.1s;
+    }
+
+    @-webkit-keyframes bouncedelay {
+        0%, 80%, 100% {
+            -webkit-transform: scale(0.0)
+        }
+        40% {
+            -webkit-transform: scale(1.0)
+        }
+    }
+
+    @keyframes bouncedelay {
+        0%, 80%, 100% {
+            transform: scale(0.0);
+            -webkit-transform: scale(0.0);
+        }
+        40% {
+            transform: scale(1.0);
+            -webkit-transform: scale(1.0);
+        }
+    }
+    .end-layer{
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        position: fixed;
+        left: 0;
+        top:0;
+        z-index:10;
+    }
+    .end-layer span{
+        line-height: 50rpx;
+        font-size: 28rpx;
+        color: #fff;
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate3d(-50%,-50%,0);
     }
 </style>
