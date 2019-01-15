@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <p class="progress-title">累计消费</p>
-                    <p class="font-family">0.00</p>
+                    <p class="font-family" v-if="requestData!=null">{{requestData.purchase}}</p>
                 </div>
             </div>
         </div>
@@ -93,11 +93,18 @@
             <span>正在结算中</span>
         </div>
 
+        <pop :text="successText"
+             :isShowLayerPop="isShowLayerPop"
+             :oneBtn="true"
+             @clickOnly="clickOnly"
+             onlyBtnText="确定"></pop>
     </div>
 </template>
 <script>
     import store from "../vuex/store";
     import bottomLine from "../../components/bottomLine";
+    import pop from '../../components/pop'
+
 
     export default {
         store,
@@ -114,21 +121,26 @@
                 amount: '',
                 requestData: null,
                 isShowEndLayer: false,
+                payTimer: null,
+                chargeTimer: null,
+                successText: '成功支付100元',
+                isShowLayerPop: false,
+
             };
         },
         components: {
-            bottomLine
+            bottomLine,
+            pop,
         },
         onShow() {
             this.beginTime = new Date().getTime();
             this.getStorage();
-
         },
         onLoad(res) {
             // 获取url上的参数
             console.log(res)
-            // this.order_no = res.order_no;
-            this.order_no = '2019011115471904797641000113'
+            this.order_no = res.order_no;
+            // this.order_no = '2019011115471904797641000113'
         },
         onUnload() {
             this.clearData();
@@ -198,6 +210,21 @@
                 this.amount = '';
                 this.requestData = null;
                 this.isShowEndLayer = false;
+                this.timer = null;
+                this.payTimer = null;
+                this.chargeTimer = null;
+                this.successText = '成功支付100元';
+                this.isShowLayerPop = false;
+            },
+            clickOnly() {
+                clearInterval(this.payTimer);
+                this.payTimer = null;
+                this.isShowLayerPop = false;
+                // 回到首页
+                wx.navigateTo({
+                    url: '/pages/map/main'
+                })
+
             },
             // 初始化获取用户信息
             getStorage() {
@@ -205,7 +232,8 @@
                 if (userInfo) {
                     this.userInfo = userInfo;
                     this.amount = userInfo.total_amount / 100;
-                    this.requestDetail();
+                    this.chargeTimer = setInterval(this.requestDetail, 1000)
+                    // this.requestDetail();
                 }
             },
             // 停止结算
@@ -228,35 +256,52 @@
                     success: function(res) {
                         if(res.data.code == 0) {
                             console.log(res)
+                            clearInterval(self.chargeTimer);
+                            self.chargeTimer = null;
                             // isShowEndLayer 正在结算中的layer显示
                             self.isShowEndLayer = true;
-                            // 结账
-                            wx.request({
-                                url: `${process.env.BASE_URL}/charge_balance`,
-                                data: reqData, //传参
-                                method: 'post',
-                                header: {
-                                    'content-type': 'application/x-www-form-urlencoded',
-                                    'Authorization': Authorization
-                                }, // 设置请求的 header
-                                success: function(res) {
-                                    if(res.data.code == 0) {
-
-                                    } else {
-                                        wx.showToast({
-                                            title: '信息有误',
-                                            icon: "none"
-                                        });
-                                    }
-                                },
-                                fail() {
-                                    wx.showToast({
-                                        title: '网络错误',
-                                        icon: "none"
-                                    });
-                                }
-                            })
-
+                            this.payTimer = setInterval(self.payRequest, 1000)
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
+            },
+            // 结算接口
+            payRequest() {
+                const reqData = {
+                    user_no: this.userInfo.user_no,
+                    order_no: this.order_no,
+                }
+                const self = this;
+                const Authorization = this.userInfo.Authorization;
+                // 结账
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge_balance`,
+                    data: reqData, //传参
+                    method: 'post',
+                    header: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'Authorization': Authorization
+                    }, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            // data里的值为某个值的时候
+                            // 正在结算中的loading隐藏  充值成功的弹窗显示
+                            // self.isShowEndLayer = true;
+                            // self.successText = '充值金额';
+                            // self.isShowLayerPop = true;
+                            //clearInterval(self.payTimer);
+                            // self.payTimer = null;
                         } else {
                             wx.showToast({
                                 title: '信息有误',
@@ -301,14 +346,28 @@
                 console.log(hour+'时'+minute+'分'+second+'秒')
             },
             recordTime(mss) {
-                var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = parseInt((mss % (1000 * 60)) / 1000);
+                let second=0, minute=0, hour=0;
+                const hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = parseInt((mss % (1000 * 60)) / 1000);
                 console.log(hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ")
                 this.second = seconds
                 this.minute = minutes
                 this.hour = hours
-                this.timer = setInterval(this.timerFun, 1000)
+                second = this.second;
+                minute = this.minute;
+                hour = this.hour;
+                if (this.second < 10) {
+                    second = '0'+ this.second;
+                }
+                if (this.minute< 10) {
+                    minute = '0'+ this.minute;
+                }
+                if (this.hour< 10) {
+                    hour = '0'+ this.hour;
+                }
+                this.showTime = hour+':'+minute+':'+second
+                // this.timer = setInterval(this.timerFun, 1000)
                 // return hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
             },
             changeTab(id) {
