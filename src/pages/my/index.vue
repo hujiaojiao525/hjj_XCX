@@ -80,6 +80,7 @@
                 amount: '--',
                 nickName: '未登录',
                 isShowLayerPop: false,
+                userInfo: '',
             }
         },
         mounted(){
@@ -92,6 +93,35 @@
             pop,
         },
         methods: {
+            requestFun() {
+                const self = this;
+                console.log(self.userInfo.user_no)
+                wx.request({
+                    url: `${process.env.BASE_URL}/user_info`,
+                    data: {
+                        user_no: self.userInfo.user_no,
+                    }, //传参
+                    method: 'get',
+                    header: {
+                        Authorization: this.userInfo.Authorization
+                    }, // 设置请求的 header
+                    success: function(userInfo) {
+                        if(userInfo.data.code == 0) {
+                            console.log('用户信息获取成功')
+                            // 存储用户信息
+                            let userMes = userInfo.data.data;
+                            self.amount = userMes.total_amount / 100;
+                            userMes.Authorization = Authorization;
+                            wx.setStorageSync('userInfo', JSON.stringify(userMes))
+                        } else {
+                            wx.showToast({
+                                title: '用户信息获取失败',
+                                icon: "none"
+                            });
+                        }
+                    },
+                })
+            },
             // 获取用户信息
             getUserInfo() {
                 var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
@@ -100,7 +130,9 @@
                     this.isLogin = true;
                     this.amount = userInfo.total_amount / 100;
                     this.nickName = userInfo.nick_name;
+                    this.userInfo = userInfo;
                     this.headImg = userInfo.use_img ? userInfo.use_img : '../../static/image/defaultHeadImg.png';
+                    this.requestFun();
                 }
             },
             clearMes() {

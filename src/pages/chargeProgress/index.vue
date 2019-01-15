@@ -24,7 +24,7 @@
         <ul class="progress-list" v-if="requestData!=null">
             <li>
                 <h2>我的钱包</h2>
-                <p>29.98元</p>
+                <p>{{requestData.balance/100}}</p>
             </li>
             <!-- <li class="margin-bottom">
                 <h2>优惠券</h2>
@@ -118,7 +118,6 @@
                 beginTime: '',
                 userInfo: null,
                 order_no: '',
-                amount: '',
                 requestData: null,
                 isShowEndLayer: false,
                 payTimer: null,
@@ -200,6 +199,9 @@
                 })
             },
             clearData() {
+                clearInterval(this.timer);
+                clearInterval(this.payTimer);
+                clearInterval(this.chargeTimer);
                 this.second = 0;
                 this.minute = 0;
                 this.hour = 0;
@@ -207,7 +209,6 @@
                 this.beginTime = '';
                 this.userInfo = null;
                 this.order_no = '';
-                this.amount = '';
                 this.requestData = null;
                 this.isShowEndLayer = false;
                 this.timer = null;
@@ -215,9 +216,6 @@
                 this.chargeTimer = null;
                 this.successText = '成功支付100元';
                 this.isShowLayerPop = false;
-                clearInterval(this.timer);
-                clearInterval(this.payTimer);
-                clearInterval(this.chargeTimer);
             },
             clickOnly() {
                 clearInterval(this.payTimer);
@@ -234,7 +232,6 @@
                 var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
                 if (userInfo) {
                     this.userInfo = userInfo;
-                    this.amount = userInfo.total_amount / 100;
                     this.chargeTimer = setInterval(this.requestDetail, 1000)
                     // this.requestDetail();
                 }
@@ -263,7 +260,7 @@
                             self.chargeTimer = null;
                             // isShowEndLayer 正在结算中的layer显示
                             self.isShowEndLayer = true;
-                            this.payTimer = setInterval(self.payRequest, 1000)
+                            self.payTimer = setInterval(self.payRequest, 1000)
                         } else {
                             wx.showToast({
                                 title: '信息有误',
@@ -281,6 +278,14 @@
             },
             // 结算接口
             payRequest() {
+                // {
+                //     "code": 0,
+                //     "data": {
+                //          "amount": "",
+                //         "power": "",
+                //         "status": 1
+                //     }
+                // }
                 const reqData = {
                     user_no: this.userInfo.user_no,
                     order_no: this.order_no,
@@ -298,13 +303,19 @@
                     }, // 设置请求的 header
                     success: function(res) {
                         if(res.data.code == 0) {
-                            // data里的值为某个值的时候
-                            // 正在结算中的loading隐藏  充值成功的弹窗显示
-                            // self.isShowEndLayer = true;
-                            // self.successText = '充值金额';
-                            // self.isShowLayerPop = true;
-                            //clearInterval(self.payTimer);
-                            // self.payTimer = null;
+                            const data = res.data.data;
+                            if (data.status === 1) {
+                                self.isShowEndLayer = false;
+                                self.successText = '已充电量'+data.power+'消费金额'+ data.amount;
+                                self.isShowLayerPop = true;
+                                clearInterval(self.payTimer);
+                                self.payTimer = null;
+                            } else {
+                                wx.showToast({
+                                    title: '结算失败',
+                                    icon: "none"
+                                });
+                            }
                         } else {
                             wx.showToast({
                                 title: '信息有误',
