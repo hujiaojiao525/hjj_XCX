@@ -7,7 +7,7 @@
             <div class="progress-mes">
                 <div>
                     <p class="progress-title">已充电量</p>
-                    <p>-</p>
+                    <p v-if="requestData!=null">{{requestData.power}}</p>
                 </div>
                 <div>
                     <p class="progress-title">充电时长</p>
@@ -247,7 +247,7 @@
                 var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
                 if (userInfo) {
                     this.userInfo = userInfo;
-                    this.chargeTimer = setInterval(this.requestDetail, 1000)
+                    this.chargeTimer = setInterval(this.requestDetail, 3000)
                     // this.requestDetail();
                 }
             },
@@ -277,7 +277,9 @@
                         if(res.data.code == 0) {
                             console.log(res)
                             clearInterval(self.chargeTimer);
+                            clearInterval(self.timer);
                             self.chargeTimer = null;
+                            this.timer = null;
                             // isShowEndLayer 正在结算中的layer显示
                             self.isShowEndLayer = true;
                             self.payTimer = setInterval(self.payRequest, 1000)
@@ -381,7 +383,7 @@
                 console.log(hour+'时'+minute+'分'+second+'秒')
             },
             recordTime(mss) {
-                let second=0, minute=0, hour=0;
+                // let second=0, minute=0, hour=0;
                 const hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = parseInt((mss % (1000 * 60)) / 1000);
@@ -389,20 +391,20 @@
                 this.second = seconds
                 this.minute = minutes
                 this.hour = hours
-                second = this.second;
-                minute = this.minute;
-                hour = this.hour;
-                if (this.second < 10) {
-                    second = '0'+ this.second;
-                }
-                if (this.minute< 10) {
-                    minute = '0'+ this.minute;
-                }
-                if (this.hour< 10) {
-                    hour = '0'+ this.hour;
-                }
-                this.showTime = hour+':'+minute+':'+second
-                // this.timer = setInterval(this.timerFun, 1000)
+                // second = this.second;
+                // minute = this.minute;
+                // hour = this.hour;
+                // if (this.second < 10) {
+                //     second = '0'+ this.second;
+                // }
+                // if (this.minute< 10) {
+                //     minute = '0'+ this.minute;
+                // }
+                // if (this.hour< 10) {
+                //     hour = '0'+ this.hour;
+                // }
+                // this.showTime = hour+':'+minute+':'+second
+                this.timer = setInterval(this.timerFun, 1000)
                 // return hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
             },
             changeTab(id) {
