@@ -115,7 +115,6 @@
                 hour: 0,
                 timer: null,
                 showTime: '00:00:00',
-                beginTime: '',
                 userInfo: null,
                 order_no: '',
                 requestData: null,
@@ -124,6 +123,7 @@
                 chargeTimer: null,
                 successText: '成功支付100元',
                 isShowLayerPop: false,
+                isCanClick: true,
 
             };
         },
@@ -132,14 +132,14 @@
             pop,
         },
         onShow() {
-            this.beginTime = new Date().getTime();
             this.getStorage();
+            // this.recordTime(3*60*1000);
         },
         onLoad(res) {
             // 获取url上的参数
             console.log(res)
             this.order_no = res.order_no;
-            // this.order_no = '2019011115471904797641000113'
+            // this.order_no = '2019011615476176965861000111'
         },
         onUnload() {
             this.clearData();
@@ -166,6 +166,21 @@
                 //         "cerrent":"",// 电流
                 //         "chargeState":"" // 充电状态0.空闲1充电中2充电结束3故障
                 //          "charge_adress"
+                //     }
+                // }
+
+                // {
+                //     "code":0,
+                //     "data":{
+                //         "balance":1262,
+                //         "soc":98,
+                //         "power":166,
+                //         "cerrent":4170,
+                //         "chargeState":2,
+                //         "order_no":"2019011615476176965861000111",
+                //         "voltage":58460,
+                //         "chargeTime":3,
+                //         "purchase":249
                 //     }
                 // }
                 const Authorization = this.userInfo.Authorization;
@@ -206,7 +221,6 @@
                 this.minute = 0;
                 this.hour = 0;
                 this.showTime = '00:00:00';
-                this.beginTime = '';
                 this.userInfo = null;
                 this.order_no = '';
                 this.requestData = null;
@@ -216,6 +230,7 @@
                 this.chargeTimer = null;
                 this.successText = '成功支付100元';
                 this.isShowLayerPop = false;
+                this.isCanClick = true;
             },
             clickOnly() {
                 clearInterval(this.payTimer);
@@ -238,12 +253,16 @@
             },
             // 停止结算
             stopBtn() {
+                if (!this.isCanClick) {
+                    return;
+                }
                 const reqData = {
                     user_no: this.userInfo.user_no,
                     order_no: this.order_no,
                 }
                 const self = this;
                 const Authorization = this.userInfo.Authorization;
+                this.isCanClick = false;
                 // 停止接口
                 wx.request({
                     url: `${process.env.BASE_URL}/charge_end`,
@@ -254,6 +273,7 @@
                         'Authorization': Authorization
                     }, // 设置请求的 header
                     success: function(res) {
+                        self.isCanClick = true;
                         if(res.data.code == 0) {
                             console.log(res)
                             clearInterval(self.chargeTimer);
@@ -269,6 +289,7 @@
                         }
                     },
                     fail() {
+                        self.isCanClick = true;
                         wx.showToast({
                             title: '网络错误',
                             icon: "none"
