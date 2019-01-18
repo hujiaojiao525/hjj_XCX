@@ -1,7 +1,7 @@
 <template>
     <div class="index-map">
         <!-- 顶部 -->
-        <div class="map-top none">
+        <div class="map-top">
             <div class="search-box" @click="goToSearch">
                 <image class="search-img" src="../../static/image/search.png"></image>
                 <span class="search-input">输入目的地/电站名</span>
@@ -57,9 +57,9 @@
     const requestData = [
         {
             id: 1,
-            name: "永州市中心医院",
-            latitude: 39.91469,
-            longitude: 116.40717,
+            name: "",
+            latitude: 23.759173,
+            longitude: 114.687749,
             iconPath: "/static/image/indexIcon.png",
             width: 30,
             height: 34,
@@ -75,46 +75,46 @@
                 display: "BYCLICK"
             }
         },
-        {
-            id: 2,
-            name: "永州市中医院",
-            latitude: 39.90469,
-            longitude: 116.44717,
-            iconPath: "/static/image/indexElseIcon.png",
-            width: 30,
-            height: 34,
-            zIndex: 2,
-            callout: {
-                content: "我是第二个这个气泡",
-                fontSize: 14,
-                color: "#000000",
-                bgColor: "#ffffff",
-                padding: 8,
-                borderRadius: 4,
-                boxShadow: "4px 8px 16px 0 rgba(0)",
-                display: "BYCLICK"
-            }
-        },
-        {
-            id: 3,
-            name: "永州市中医院",
-            latitude: 39.90469,
-            longitude: 116.44819,
-            iconPath: "/static/image/indexElseIcon.png",
-            width: 30,
-            height: 34,
-            zIndex: 3,
-            callout: {
-                content: "我是第三个这个气泡",
-                fontSize: 14,
-                color: "#000000",
-                bgColor: "#ffffff",
-                padding: 8,
-                borderRadius: 4,
-                boxShadow: "4px 8px 16px 0 rgba(0)",
-                display: "BYCLICK"
-            }
-        }
+        // {
+        //     id: 2,
+        //     name: "永州市中医院",
+        //     latitude: 39.90469,
+        //     longitude: 116.44717,
+        //     iconPath: "/static/image/indexElseIcon.png",
+        //     width: 30,
+        //     height: 34,
+        //     zIndex: 2,
+        //     callout: {
+        //         content: "我是第二个这个气泡",
+        //         fontSize: 14,
+        //         color: "#000000",
+        //         bgColor: "#ffffff",
+        //         padding: 8,
+        //         borderRadius: 4,
+        //         boxShadow: "4px 8px 16px 0 rgba(0)",
+        //         display: "BYCLICK"
+        //     }
+        // },
+        // {
+        //     id: 3,
+        //     name: "永州市中医院",
+        //     latitude: 39.90469,
+        //     longitude: 116.44819,
+        //     iconPath: "/static/image/indexElseIcon.png",
+        //     width: 30,
+        //     height: 34,
+        //     zIndex: 3,
+        //     callout: {
+        //         content: "我是第三个这个气泡",
+        //         fontSize: 14,
+        //         color: "#000000",
+        //         bgColor: "#ffffff",
+        //         padding: 8,
+        //         borderRadius: 4,
+        //         boxShadow: "4px 8px 16px 0 rgba(0)",
+        //         display: "BYCLICK"
+        //     }
+        // }
     ];
     import store from '../vuex/store';
 
@@ -125,7 +125,7 @@
                 editPop: false,
                 focus: false,
                 WinHeight: "",
-                // markers: requestData,
+                markers: requestData,
                 markers: [],
                 bottomHeight: "",
                 mapCtx: null,
@@ -268,8 +268,8 @@
                         console.log(res);
                         // 通过获取的经纬度进行请求数据
                         // 暂时注释掉
-                        // let arr = that.setPos()
-                        // that.markers = arr;
+                        let arr = that.setPos()
+                        that.markers = arr;
                     }
                 });
             },
