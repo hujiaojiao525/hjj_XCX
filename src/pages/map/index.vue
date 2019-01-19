@@ -4,7 +4,7 @@
         <div class="map-top">
             <div class="search-box" @click="goToSearch">
                 <image class="search-img" src="../../static/image/search.png"></image>
-                <span class="search-input">输入目的地/电站名</span>
+                <span class="search-input">{{topValue}}</span>
                 <!-- <input class="search-input" type="text" placeholder="输入目的地/电站名"> -->
             </div>
             <image class="listImg-img" @click="goToList" src="../../static/image/listImg.png"></image>
@@ -54,68 +54,6 @@
 </template>
 
 <script>
-    const requestData = [
-        {
-            id: 1,
-            name: "",
-            latitude: 23.759173,
-            longitude: 114.687749,
-            iconPath: "/static/image/indexIcon.png",
-            width: 30,
-            height: 34,
-            zIndex: 1,
-            callout: {
-                content: "我是第一个这个气泡",
-                fontSize: 14,
-                color: "#000000",
-                bgColor: "#ffffff",
-                padding: 8,
-                borderRadius: 4,
-                boxShadow: "4px 8px 16px 0 rgba(0)",
-                display: "BYCLICK"
-            }
-        },
-        // {
-        //     id: 2,
-        //     name: "永州市中医院",
-        //     latitude: 39.90469,
-        //     longitude: 116.44717,
-        //     iconPath: "/static/image/indexElseIcon.png",
-        //     width: 30,
-        //     height: 34,
-        //     zIndex: 2,
-        //     callout: {
-        //         content: "我是第二个这个气泡",
-        //         fontSize: 14,
-        //         color: "#000000",
-        //         bgColor: "#ffffff",
-        //         padding: 8,
-        //         borderRadius: 4,
-        //         boxShadow: "4px 8px 16px 0 rgba(0)",
-        //         display: "BYCLICK"
-        //     }
-        // },
-        // {
-        //     id: 3,
-        //     name: "永州市中医院",
-        //     latitude: 39.90469,
-        //     longitude: 116.44819,
-        //     iconPath: "/static/image/indexElseIcon.png",
-        //     width: 30,
-        //     height: 34,
-        //     zIndex: 3,
-        //     callout: {
-        //         content: "我是第三个这个气泡",
-        //         fontSize: 14,
-        //         color: "#000000",
-        //         bgColor: "#ffffff",
-        //         padding: 8,
-        //         borderRadius: 4,
-        //         boxShadow: "4px 8px 16px 0 rgba(0)",
-        //         display: "BYCLICK"
-        //     }
-        // }
-    ];
     import store from '../vuex/store';
 
     export default {
@@ -125,7 +63,6 @@
                 editPop: false,
                 focus: false,
                 WinHeight: "",
-                markers: requestData,
                 markers: [],
                 bottomHeight: "",
                 mapCtx: null,
@@ -133,10 +70,22 @@
                 toastText: "位于居中位置",
                 obj: {},
                 latitude: '',
-                longitude: ''
+                longitude: '',
+                topValue: '输入目的地/电站名',
+                requestData: null,
+                userInfo: null,
             };
         },
-        mounted() {
+        onLoad(res) {
+            // 获取url上的参数
+            this.latitude = res.latitude;
+            this.longitude = res.longitude;
+            console.log(res.topValue)
+            if (res.topValue) {
+                this.topValue = res.topValue+'附近的充电站';
+            }
+        },
+        onShow() {
             const self = this;
             var query = wx.createSelectorQuery();
             query.select(".map-top").boundingClientRect();
@@ -147,14 +96,78 @@
                     }
                 });
             });
-            this.currentPos()
+            this.getStorage();
+            this.listRequest();
+            if (!this.latitude) {
+                this.currentPos()
+            }
             // 暂时注释掉
-            // this.showToast() 
+            // this.showToast()
         },
         onReady: function(e) {
             this.mapCtx = wx.createMapContext("map");
         },
         methods: {
+            // 初始化获取用户信息
+            getStorage() {
+                var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
+                if (userInfo) {
+                    this.userInfo = userInfo;
+                }
+            },
+            listRequest(){
+                const me = this;
+                let header = {};
+                if (this.userInfo) {
+                    header.Authorization = this.userInfo.Authorization
+                }
+                let arr = [];
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge_map_list`,
+                    data: {}, //传参
+                    method: 'get',
+                    header: header, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            res.data.data.data.forEach(function(val) {
+                                arr.push({
+                                    id: val.id,
+                                    name: "",
+                                    latitude: val.latitude,
+                                    longitude: val.longitude,
+                                    iconPath: "/static/image/indexIcon.png",
+                                    width: 30,
+                                    height: 34,
+                                    zIndex: 1,
+                                    callout: {
+                                        content: val.charge_address + '\n'+val.charge_fee + '元/度\n最近充电30分钟前',
+                                        fontSize: 14,
+                                        color: "#000000",
+                                        bgColor: "#ffffff",
+                                        padding: 8,
+                                        borderRadius: 4,
+                                        boxShadow: "4px 8px 16px 0 rgba(0)",
+                                        display: "BYCLICK"
+                                    }
+                                })
+                            })
+                            me.requestData = arr;
+                            console.log(me.requestData)
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
+            },
             createMarker(point) {
                 let latitude = point.latitude;
                 let longitude = point.longitude;
@@ -249,7 +262,7 @@
             // 设置位置
             setPos() {
                 let markers = [];
-                for (let item of requestData) {
+                for (let item of this.requestData) {
                     let marker = this.createMarker(item);
                     markers.push(marker);
                 }
@@ -306,7 +319,7 @@
             goToDetail(e) {
                 console.log(e);
                 wx.navigateTo({
-                    url: "/pages/powerDetail/main"
+                    url: "/pages/powerDetail/main?markerId="+e.mp.markerId
                 });
             }
         }

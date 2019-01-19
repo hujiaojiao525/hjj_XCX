@@ -1,10 +1,11 @@
 <template>
-    <div class="power-detail">
+    <div class="power-detail" v-if="detailData!=null">
         <div class="detail-top">
             <div class="item-content">
-                <image src="http://picture.51auto.com/car/201812/16/pic820181216101501-gFiag-mid.jpg"></image>
+                <!--<image src="http://picture.51auto.com/car/201812/16/pic820181216101501-gFiag-mid.jpg"></image>-->
+                <image :src="detailData.station_img"></image>
                 <div class="item-right">
-                    <h2>北京市通州区农业局充电站</h2>
+                    <h2>{{detailData.charge_name}}</h2>
                     <div class="star-container">
                         <span class="star"></span>
                         <span  :style="{width : (50*(93/100))+'px'}" class="star-bg"></span>
@@ -17,25 +18,25 @@
                 </div>
             </div>
         </div>
-        <div class="quick-slow">
-            <p><span class="quick-span">快</span><span>空闲2/共2</span></p>
-            <p><span class="slow-span">慢</span><span>空闲2/共2</span></p>
-        </div>
+        <!--<div class="quick-slow">-->
+            <!--<p><span class="quick-span">快</span><span>空闲2/共2</span></p>-->
+            <!--<p><span class="slow-span">慢</span><span>空闲2/共2</span></p>-->
+        <!--</div>-->
         <!-- 充电详情，充电终端 tab-->
-        <ul class="power-tab">
-            <li v-for="(item,index) in orderList" :key="index"
-                :class="{choose: chooseId === item.id}"  @click="changeTab(item.id)">
-                {{item.val}}
-                <span class="tab-line" v-show="chooseId === item.id"></span>
-            </li>
-        </ul>
+        <!--<ul class="power-tab">-->
+            <!--<li v-for="(item,index) in orderList" :key="index"-->
+                <!--:class="{choose: chooseId === item.id}"  @click="changeTab(item.id)">-->
+                <!--{{item.val}}-->
+                <!--<span class="tab-line" v-show="chooseId === item.id"></span>-->
+            <!--</li>-->
+        <!--</ul>-->
         <!--  充电详情  -->
         <div v-show="chooseId === 0" class="detail-left">
             <div class="detail-position">
                 <image src="../../static/image/home.png"></image>
                 <div class="position-text">
-                    <p>北京市通州区运河城东法界32号北京市听得抵金额细腻恩</p>
-                    <span>距我26.3km</span>
+                    <p>{{detailData.charge_address}}</p>
+                    <!--<span>距我26.3km</span>-->
                 </div>
                 <div class="navigation" @click="goDaoHang">导航</div>
             </div>
@@ -43,11 +44,11 @@
                 <li>
                     <p class="list-left">当前价格</p>
                     <div class="list-right">
-                        <p><span class="red">1.3800</span>元/度(含服务费)</p>
+                        <p><span class="red">{{detailData.charge_free}}</span>元/度(含服务费)</p>
                         <p class="gray-color" @click="goToPriceDetail">
                             <span>全天价格统一</span>
                             <span>价格详情</span>
-                            <i class="iconfont icon-jiantou  right"></i>
+                            <!--<i class="iconfont icon-jiantou  right"></i>-->
                         </p>
 
                     </div>
@@ -55,7 +56,7 @@
                 <li>
                     <p class="list-left">停车费</p>
                     <div class="list-right">
-                        <p>免费</p>
+                        <p>{{detailData.parking_fee}}</p>
                     </div>
                 </li>
                 <li>
@@ -67,46 +68,46 @@
                 <li>
                     <p class="list-left">营业时间</p>
                     <div class="list-right">
-                        <p>周一至周日00:00-24:00</p>
+                        <p>{{detailData.business_hours}}</p>
                     </div>
                 </li>
                 <li>
                     <p class="list-left">服务电话</p>
                     <div class="list-right">
-                        <p>400-1234-567</p>
+                        <p>0762-3989588</p>
                     </div>
                 </li>
-                <li @click="goToCharge">
-                    <p class="list-left black">近七天成功充电<span class="red">11</span>次</p>
-                    <div class="list-right">
-                        <p>
-                            <span>最近充电1小时前</span>
-                            <i class="iconfont icon-jiantou  right"></i>
-                        </p>
-                    </div>
-                </li>
+                <!--<li @click="goToCharge">-->
+                    <!--<p class="list-left black">近七天成功充电<span class="red">11</span>次</p>-->
+                    <!--<div class="list-right">-->
+                        <!--<p>-->
+                            <!--<span>最近充电1小时前</span>-->
+                            <!--<i class="iconfont icon-jiantou  right"></i>-->
+                        <!--</p>-->
+                    <!--</div>-->
+                <!--</li>-->
             </ul>
-            <div class="comment-list">
-                <!--  -->
-                <h2>网友评论</h2>
-                <ul>
-                    <li>
-                       <image src="../../static/image/commentHead.png"></image>
-                       <div class="comment-middle">
-                           <h2>乐乐</h2>
-                           <div>
-                                <span>平分</span>
-                                <span class="star-container">
-                                    <span class="star"></span>
-                                    <span  :style="{width : (50*(93/100))+'px'}" class="star-bg"></span>
-                                </span>
-                           </div>
-                           <p>还可还可以吧！还可以吧！还可以吧！以吧！</p>
-                       </div>
-                       <p class="comment-right">02-20 18:01</p>
-                    </li>
-                </ul>
-            </div>
+            <!--<div class="comment-list">-->
+                <!--&lt;!&ndash;  &ndash;&gt;-->
+                <!--<h2>网友评论</h2>-->
+                <!--<ul>-->
+                    <!--<li>-->
+                       <!--<image src="../../static/image/commentHead.png"></image>-->
+                       <!--<div class="comment-middle">-->
+                           <!--<h2>乐乐</h2>-->
+                           <!--<div>-->
+                                <!--<span>平分</span>-->
+                                <!--<span class="star-container">-->
+                                    <!--<span class="star"></span>-->
+                                    <!--<span  :style="{width : (50*(93/100))+'px'}" class="star-bg"></span>-->
+                                <!--</span>-->
+                           <!--</div>-->
+                           <!--<p>还可还可以吧！还可以吧！还可以吧！以吧！</p>-->
+                       <!--</div>-->
+                       <!--<p class="comment-right">02-20 18:01</p>-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</div>-->
 
         </div>
         <!--  充电终端  -->
@@ -309,13 +310,26 @@
                 clickArr: [],
                 isShowScreen: false,
                 animationData: {},
+                userInfo: null,
+                markerId: 1,
+                detailData: null,
             };
         },
         components: {
             bottomLine
         },
+        onShow() {
+            this.getStorage();
+            this.listRequest();
+        },
         onUnload() {
-
+            this.detailData = null;
+            this.userInfo = null;
+            this.markerId = '';
+        },
+        onLoad(res) {
+            console.log(res)
+            // this.markerId = res.markerId;
         },
         mounted() {
             const me = this;
@@ -328,6 +342,46 @@
             this.requestData = requestData
         },
         methods: {
+            // 初始化获取用户信息
+            getStorage() {
+                var userInfo = wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : '';
+                if (userInfo) {
+                    this.userInfo = userInfo;
+                }
+            },
+            listRequest(){
+                const me = this;
+                let header = {};
+                if (this.userInfo) {
+                    header.Authorization = this.userInfo.Authorization
+                }
+                let arr = [];
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge_details`,
+                    data: {
+                        id: me.markerId,
+                    }, //传参
+                    method: 'get',
+                    header: header, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            me.detailData = res.data.data;
+                            console.log(me.detailData)
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
+            },
             // 跳转价格详情页面
             goToPriceDetail() {
                 wx.navigateTo({
@@ -342,7 +396,7 @@
             },
             // 点击筛选
             clickScreen() {
-                
+
                 // const animation = wx.createAnimation()
                 // animation.translateY(0).step({duration: 1000})
                 // this.animationData = animation.export()

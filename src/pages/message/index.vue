@@ -199,6 +199,43 @@
                     url: "/pages/map/main"
                 });
             },
+            listRequest(){
+                const me = this;
+                let header = {
+                    'content-type': 'application/x-www-form-urlencoded',
+                };
+                if (this.userInfo) {
+                    header.Authorization = this.userInfo.Authorization
+                }
+                wx.request({
+                    url: `${process.env.BASE_URL}/charge_mind`,
+                    data: {
+                        user_no: me.userInfo.user_no
+                    }, //传参
+                    method: 'get',
+                    header: header, // 设置请求的 header
+                    success: function(res) {
+                        if(res.data.code == 0) {
+                            if (res.data.data.amount < 10) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        } else {
+                            wx.showToast({
+                                title: '信息有误',
+                                icon: "none"
+                            });
+                        }
+                    },
+                    fail() {
+                        wx.showToast({
+                            title: '网络错误',
+                            icon: "none"
+                        });
+                    }
+                })
+            },
             // 立即充电
             chargeBtn() {
                 if (!this.userInfo) {
@@ -207,6 +244,13 @@
                         url: '/pages/phoneLogin/main?goWhere=back'
                     })
                     return;
+                }
+                if (!this.listRequest()) {
+                    wx.showToast({
+                        title: '余额不足',
+                        icon: "none"
+                    });
+                    return false;
                 }
                 //"stake_no", "spear_no", "qr_code", "user_no"
                 const stake_no = this.stake_no;

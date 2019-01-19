@@ -5,10 +5,11 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
 	state:{
         va1:{},
-	},
+        inputValue: '',
+    },
 	mutations:{
-        updateVal(state, value) {
-            state.va1 = value.va1;
+        updateInputValue(state, value) {
+            state.inputValue = value.inputValue;
         }
 	},
 	getters:{
