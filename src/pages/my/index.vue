@@ -38,7 +38,7 @@
                 <i class="left-icon iconfont icon-my_icon_ordermanage_"></i>
                 <span class="formLabel">我的订单</span>
                 <p class="list-right">
-                    <span>碳减排<span>-</span><span>kg</span></span>
+                    <!-- <span>碳减排<span>-</span><span>kg</span></span> -->
                     <i class="iconfont icon-jiantou  right"></i>
                 </p>
             </div>
@@ -111,13 +111,8 @@
                             // 存储用户信息
                             let userMes = userInfo.data.data;
                             self.amount = userMes.total_amount / 100;
-                            userMes.Authorization = Authorization;
+                            userMes.Authorization = self.userInfo.Authorization;
                             wx.setStorageSync('userInfo', JSON.stringify(userMes))
-                        } else {
-                            wx.showToast({
-                                title: '用户信息获取失败',
-                                icon: "none"
-                            });
                         }
                     },
                 })

@@ -152,8 +152,8 @@
                 wx.request({
                     url: `${process.env.BASE_URL}/charge`,
                     data: {
-                        qr_code: scanResult.replace(/\s/g,"")
-                        // qr_code: '0000000000000001'
+                        // qr_code: scanResult.replace(/\s/g,"")
+                        qr_code: '0000000000000001'
                     }, //传参
                     method: 'get',
                     header: header, // 设置请求的 header
@@ -212,7 +212,7 @@
                     data: {
                         user_no: me.userInfo.user_no
                     }, //传参
-                    method: 'get',
+                    method: 'post',
                     header: header, // 设置请求的 header
                     success: function(res) {
                         if(res.data.code == 0) {
@@ -221,11 +221,6 @@
                             } else {
                                 return true;
                             }
-                        } else {
-                            wx.showToast({
-                                title: '信息有误',
-                                icon: "none"
-                            });
                         }
                     },
                     fail() {

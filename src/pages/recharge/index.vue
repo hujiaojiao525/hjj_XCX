@@ -16,7 +16,7 @@
             <input type="number" @focus="focus" v-model="inputMoney" placeholder-style="color:#cccccc" placeholder="请输入金额">
         </div>
         <p class="recharge-mes">
-            点击立即充值即表示您已阅读并同意<span class="recharge-pro">《充值协议》</span>
+            点击立即充值即表示您已阅读并同意<span class="recharge-pro" @click="goArgument">《充值协议》</span>
         </p>
         <div class="recharge-btn" @click="rechargeBtn">立即充值</div>
         <div class="balance" @click="goToBalanceDetail">点击查看余额明细</div>
@@ -72,6 +72,11 @@
             goToBalanceDetail() {
                 wx.navigateTo({
                     url: '/pages/balanceDetail/main'
+                })
+            },
+            goArgument() {
+                wx.navigateTo({
+                    url: '/pages/argument/main'
                 })
             },
             focus() {

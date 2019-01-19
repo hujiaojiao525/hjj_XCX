@@ -23,6 +23,7 @@ export default {
             'pages/message/main',
             'pages/chargeWait/main',
             'pages/chargeProgress/main',
+            'pages/argumnet/main',
 		],
 		window: {
             backgroundTextStyle: 'light',

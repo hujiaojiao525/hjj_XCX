@@ -7,7 +7,7 @@
                 <span class="search-input">{{topValue}}</span>
                 <!-- <input class="search-input" type="text" placeholder="输入目的地/电站名"> -->
             </div>
-            <image class="listImg-img" @click="goToList" src="../../static/image/listImg.png"></image>
+            <!-- <image class="listImg-img" @click="goToList" src="../../static/image/listImg.png"></image> -->
         </div>
         <div class="top-layer" v-show="editPop"></div>
         <map
@@ -135,7 +135,7 @@
                                     name: "",
                                     latitude: val.latitude,
                                     longitude: val.longitude,
-                                    iconPath: "/static/image/indexIcon.png",
+                                    iconPath: "/static/image/indexElseIcon.png",
                                     width: 30,
                                     height: 34,
                                     zIndex: 1,

@@ -11,9 +11,15 @@
                         <span  :style="{width : (50*(93/100))+'px'}" class="star-bg"></span>
                     </div>
                     <div class="item-span">
-                        <span>个人共享</span>
-                        <span>个享</span>
-                        <span class="free-border">芝麻信用·免押金</span>
+                        <span v-if="detailData.operation_type === 0">自营</span>
+                        <span v-if="detailData.operation_type === 1">非自营</span>
+                        <span v-if="detailData.operation_type === 2">互联互通</span>
+                        <span v-if="detailData.operation_type === 3">个人共享</span>
+                        <span v-if="detailData.operation_type === 4">个人共享</span>
+                        <span v-if="detailData.operation_type === 5">个人专用</span>
+                        <span v-if="detailData.charge_type === 0">对外开发</span>
+                        <span v-if="detailData.charge_type === 1">不对外开发</span>
+                        <span v-if="detailData.charge_type === 2">个人桩</span>
                     </div>
                 </div>
             </div>
@@ -38,13 +44,13 @@
                     <p>{{detailData.charge_address}}</p>
                     <!--<span>距我26.3km</span>-->
                 </div>
-                <div class="navigation" @click="goDaoHang">导航</div>
+                <!-- <div class="navigation" @click="goDaoHang(detailData.latitude, detailData.longitude)">导航</div> -->
             </div>
             <ul class="detail-list">
                 <li>
                     <p class="list-left">当前价格</p>
                     <div class="list-right">
-                        <p><span class="red">{{detailData.charge_free}}</span>元/度(含服务费)</p>
+                        <p><span class="red">{{detailData.charge_fee}}</span>元/度(含服务费)</p>
                         <p class="gray-color" @click="goToPriceDetail">
                             <span>全天价格统一</span>
                             <span>价格详情</span>
@@ -56,19 +62,22 @@
                 <li>
                     <p class="list-left">停车费</p>
                     <div class="list-right">
-                        <p>{{detailData.parking_fee}}</p>
+                        <p v-if="detailData.parking_fee === 0">免费</p>
+                        <p v-if="detailData.parking_fee === 1">收费</p>
                     </div>
                 </li>
                 <li>
                     <p class="list-left">现场管理</p>
                     <div class="list-right">
-                        <p>北京鼎天新能源</p>
+                        <p>鼎天新能源</p>
                     </div>
                 </li>
                 <li>
                     <p class="list-left">营业时间</p>
                     <div class="list-right">
-                        <p>{{detailData.business_hours}}</p>
+                        <p v-if="detailData.business_hours === 0">24小时</p>
+                        <p v-if="detailData.business_hours === 1">营业中</p>
+                        <p v-if="detailData.business_hours === 2">时间不确定</p>
                     </div>
                 </li>
                 <li>
@@ -357,7 +366,7 @@
                 }
                 let arr = [];
                 wx.request({
-                    url: `${process.env.BASE_URL}/charge_details`,
+                    url: `${process.env.BASE_URL}/charge_station_details`,
                     data: {
                         id: me.markerId,
                     }, //传参
@@ -452,15 +461,15 @@
             // 去导航
             goDaoHang() {
                 wx.getLocation({
-                    type: 'gcj02', //返回可以用于wx.openLocation的经纬度
-                    success (res) {
-                        const latitude = res.latitude
-                        const longitude = res.longitude
-                        wx.openLocation({
-                            latitude,
-                            longitude,
-                            scale: 28
-                        })
+                    type: 'gcj02', // 返回可以用于wx.openLocation的经纬度
+                    success(res) {
+                    const latitude = res.latitude
+                    const longitude = res.longitude
+                    wx.openLocation({
+                      latitude,
+                      longitude,
+                      scale: 18
+                    })
                     }
                 })
             }

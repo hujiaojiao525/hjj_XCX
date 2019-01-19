@@ -123,10 +123,10 @@
                                 latitude: res.data[i].location.lat,
                                 longitude: res.data[i].location.lng
                             });
-                            if(res.data[i].province === '广东省') {
-                                console.log(res.data[i].province)
-                                _this.listRequest();
-                            }
+                        }
+
+                        if(e.mp.detail.value.indexOf('广东') > -1) {
+                            _this.listRequest();
                         }
                         _this.getData = sug;
                     },
