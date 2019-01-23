@@ -85,7 +85,7 @@
             clickOnly() {
                 // 返回到立即充电页面
                 this.clearData();
-                wx.navigateTo({
+                wx.redirectTo({
                     url: "/pages/message/main"
                 });
             },

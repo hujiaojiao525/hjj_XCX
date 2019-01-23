@@ -3,7 +3,7 @@
         <div class="mes-top">
             <div class="mes-title">
                 <p>{{requestData.charge_name}}</p>
-                <span>0762-3989588</span>
+                <span @click="clickPhone">0762-3989588</span>
             </div>
             <div class="mes-content">
                 <div class="content-left">
@@ -53,11 +53,18 @@
         <div class="mes-btn" @click="chargeBtn">
             立即充电
         </div>
+        <pop :text="moneyText"
+             :isShowLayerPop="isShowLayerPop"
+             @clickRight="clickRight"
+             @clickLeft="clickLeft"
+             rightBtnText="去充值"
+             leftBtnText="放弃"></pop>
     </div>
 </template>
 <script>
     import store from '../vuex/store';
     import bottomLine from '../../components/bottomLine'
+    import pop from '../../components/pop'
 
     export default {
         store,
@@ -69,18 +76,46 @@
                 stake_B: '',
                 stake_no: '',
                 userInfo: '',
+                moneyText: '',
+                isShowLayerPop: false,
             };
         },
         components: {
-            bottomLine
+            bottomLine,
+            pop
         },
         onShow() {
             this.getStorage()
         },
         onUnload() {
-
+            this.isShowLayerPop = false;
+            this.requestData = null;
+            this.chooseId = 1;
+            this.stake_A = '';
+            this.stake_B = '';
+            this.userInfo = '';
+            this.moneyText = '';
         },
         methods: {
+            clickLeft() {
+                // 放弃  回到首页
+                wx.navigateTo({
+                    url: '/pages/map/main'
+                })
+                this.isShowLayerPop = false;
+            },
+            clickRight() {
+                // 去充值
+                wx.navigateTo({
+                    url: '/pages/recharge/main'
+                })
+                this.isShowLayerPop = false;
+            },
+            clickPhone() {
+                 wx.makePhoneCall({
+                    phoneNumber: '0762-3989588',
+                })
+            },
             // 选择电桩
             chooseSearch(id, no) {
                 this.chooseId = id;
@@ -152,8 +187,8 @@
                 wx.request({
                     url: `${process.env.BASE_URL}/charge`,
                     data: {
-                        // qr_code: scanResult.replace(/\s/g,"")
-                        qr_code: '0000000000000001'
+                        qr_code: scanResult.replace(/\s/g,"")
+                        // qr_code: '0000000000000001'
                     }, //传参
                     method: 'get',
                     header: header, // 设置请求的 header
@@ -200,6 +235,17 @@
                 });
             },
             listRequest(){
+                
+            },
+            // 立即充电
+            chargeBtn() {
+                if (!this.userInfo) {
+                    // 去登录
+                    wx.navigateTo({
+                        url: '/pages/phoneLogin/main?goWhere=back'
+                    })
+                    return;
+                }
                 const me = this;
                 let header = {
                     'content-type': 'application/x-www-form-urlencoded',
@@ -216,10 +262,24 @@
                     header: header, // 设置请求的 header
                     success: function(res) {
                         if(res.data.code == 0) {
-                            if (res.data.data.amount < 10) {
-                                return false;
+                            if (Number(res.data.data.amount)/100 < 10) {
+                                me.isShowLayerPop = true;
+                                me.moneyText = '当前账户余额为'+Number(res.data.data.amount)/100 +'元，余额不足';
                             } else {
-                                return true;
+                                const stake_no = me.stake_no;
+                                const spear_no = me.requestData.spear_no;
+                                const qr_code = me.requestData.spear_no;
+                                const user_no = me.userInfo.user_no
+                                const Authorization = me.userInfo.Authorization
+                                const reqData = {
+                                    stake_no: stake_no,
+                                    spear_no: spear_no,
+                                    qr_code: qr_code,
+                                    user_no: user_no
+                                }
+                                wx.navigateTo({
+                                    url: "/pages/chargeWait/main?reqData=" + JSON.stringify(reqData) + "&Authorization="+Authorization
+                                })
                             }
                         }
                     },
@@ -230,41 +290,12 @@
                         });
                     }
                 })
-            },
-            // 立即充电
-            chargeBtn() {
-                if (!this.userInfo) {
-                    // 去登录
-                    wx.navigateTo({
-                        url: '/pages/phoneLogin/main?goWhere=back'
-                    })
-                    return;
-                }
-                if (!this.listRequest()) {
-                    wx.showToast({
-                        title: '余额不足',
-                        icon: "none"
-                    });
-                    return false;
-                }
-                //"stake_no", "spear_no", "qr_code", "user_no"
-                const stake_no = this.stake_no;
-                const spear_no = this.requestData.spear_no;
-                const qr_code = this.requestData.spear_no;
-                const user_no = this.userInfo.user_no
-                const Authorization = this.userInfo.Authorization
-                const reqData = {
-                    stake_no: stake_no,
-                    spear_no: spear_no,
-                    qr_code: qr_code,
-                    user_no: user_no
-                }
-                // wx.navigateTo({
-                //     url: "/pages/chargeWait/main?stake_no="+stake_no+"&spear_no="+spear_no+"&qr_code="+qr_code+"&user_no="+user_no+"&Authorization="+Authorization
-                // })
-                wx.navigateTo({
-                    url: "/pages/chargeWait/main?reqData=" + JSON.stringify(reqData) + "&Authorization="+Authorization
-                })
+
+
+
+
+                
+                
             },
         }
     };

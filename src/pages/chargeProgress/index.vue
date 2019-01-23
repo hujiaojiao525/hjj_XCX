@@ -7,7 +7,7 @@
             <div class="progress-mes">
                 <div>
                     <p class="progress-title">已充电量</p>
-                    <p v-if="requestData!=null">{{requestData.power}}</p>
+                    <p v-if="requestData!=null && requestData.power">{{requestData.power}}kw</p>
                 </div>
                 <div>
                     <p class="progress-title">充电时长</p>
@@ -17,14 +17,15 @@
                 </div>
                 <div>
                     <p class="progress-title">累计消费</p>
-                    <p class="font-family" v-if="requestData!=null">{{requestData.purchase}}</p>
+                    <p class="font-family"  style="display:inline-block;" v-if="requestData!=null && requestData.purchase">{{requestData.purchase}}</p>
+                    <span style="display:inline-block;">元</span>
                 </div>
             </div>
         </div>
         <ul class="progress-list" v-if="requestData!=null">
             <li>
                 <h2>我的钱包</h2>
-                <p>{{requestData.balance/100}}</p>
+                <p v-if="requestData.balance">{{requestData.balance/100}}元</p>
             </li>
             <!-- <li class="margin-bottom">
                 <h2>优惠券</h2>
@@ -36,7 +37,7 @@
             <li>
                 <h2>充电站</h2>
                 <p>
-                    {{requestData.charge_adress}}
+                    {{requestData.charge_address}}
                 </p>
             </li>
             <li>
@@ -137,9 +138,7 @@
         },
         onLoad(res) {
             // 获取url上的参数
-            console.log(res)
             this.order_no = res.order_no;
-            // this.order_no = '2019011615476176965861000111'
         },
         onUnload() {
             this.clearData();
@@ -152,37 +151,6 @@
                     user_no: this.userInfo.user_no,
                     order_no: this.order_no,
                 }
-
-                // {
-                //     'code': code,
-                //     'data': {
-                //         "order_no":"",
-                //         "purchase":"", // 消费金额
-                //         "power":"",  // 电量（0.01KW/位）
-                //         "chargeTime":"", // 充电时间（分钟）
-                //         "balance":"",// 余额（分）
-                //         "soc":"", // 百分比
-                //         "voltage":"", // 电压（0.01V）
-                //         "cerrent":"",// 电流
-                //         "chargeState":"" // 充电状态0.空闲1充电中2充电结束3故障
-                //          "charge_adress"
-                //     }
-                // }
-
-                // {
-                //     "code":0,
-                //     "data":{
-                //         "balance":1262,
-                //         "soc":98,
-                //         "power":166,
-                //         "cerrent":4170,
-                //         "chargeState":2,
-                //         "order_no":"2019011615476176965861000111",
-                //         "voltage":58460,
-                //         "chargeTime":3,
-                //         "purchase":249
-                //     }
-                // }
                 const Authorization = this.userInfo.Authorization;
                 wx.request({
                     url: `${process.env.BASE_URL}/charge_details`,
@@ -195,14 +163,10 @@
                     success: function(res) {
                         if(res.data.code == 0) {
                             const data = res.data.data;
-                            console.log(res)
                             self.requestData = data;
-                            self.recordTime(data.chargeTime*60*1000);
-                        } else {
-                            wx.showToast({
-                                title: '信息有误',
-                                icon: "none"
-                            });
+                            if (data.chargeTime) {
+                                self.recordTime(data.chargeTime*60*1000);
+                            }
                         }
                     },
                     fail() {
@@ -237,7 +201,7 @@
                 this.payTimer = null;
                 this.isShowLayerPop = false;
                 // 回到首页
-                wx.navigateTo({
+                wx.redirectTo({
                     url: '/pages/map/main'
                 })
 
@@ -275,19 +239,14 @@
                     success: function(res) {
                         self.isCanClick = true;
                         if(res.data.code == 0) {
-                            console.log(res)
+                            console.log('结束了')
                             clearInterval(self.chargeTimer);
                             clearInterval(self.timer);
                             self.chargeTimer = null;
-                            this.timer = null;
+                            self.timer = null;
                             // isShowEndLayer 正在结算中的layer显示
                             self.isShowEndLayer = true;
                             self.payTimer = setInterval(self.payRequest, 1000)
-                        } else {
-                            wx.showToast({
-                                title: '信息有误',
-                                icon: "none"
-                            });
                         }
                     },
                     fail() {
@@ -328,16 +287,19 @@
                         if(res.data.code == 0) {
                             const data = res.data.data;
                             if (data.status === 1) {
-                                self.isShowEndLayer = false;
-                                self.successText = '已充电量'+data.power+'消费金额'+ data.amount;
-                                self.isShowLayerPop = true;
                                 clearInterval(self.payTimer);
+                                clearInterval(self.chargeTimer);
+                                self.chargeTimer = null;
                                 self.payTimer = null;
+                                self.isShowEndLayer = false;
+                                self.successText = '已充电量'+data.power+'kw,消费金额'+ data.amount/100+'元';
+                                self.isShowLayerPop = true;
+                                
                             } else {
-                                wx.showToast({
-                                    title: '结算失败',
-                                    icon: "none"
-                                });
+                                // wx.showToast({
+                                //     title: '结算失败',
+                                //     icon: "none"
+                                // });
                             }
                         } else {
                             wx.showToast({
@@ -380,41 +342,34 @@
                     hour = '0'+ this.hour;
                 }
                 this.showTime = hour+':'+minute+':'+second
-                console.log(hour+'时'+minute+'分'+second+'秒')
             },
             recordTime(mss) {
                 // let second=0, minute=0, hour=0;
                 const hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = parseInt((mss % (1000 * 60)) / 1000);
-                console.log(hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ")
                 this.second = seconds
                 this.minute = minutes
                 this.hour = hours
-                // second = this.second;
-                // minute = this.minute;
-                // hour = this.hour;
-                // if (this.second < 10) {
-                //     second = '0'+ this.second;
-                // }
-                // if (this.minute< 10) {
-                //     minute = '0'+ this.minute;
-                // }
-                // if (this.hour< 10) {
-                //     hour = '0'+ this.hour;
-                // }
-                // this.showTime = hour+':'+minute+':'+second
-                this.timer = setInterval(this.timerFun, 1000)
+                second = this.second;
+                minute = this.minute;
+                hour = this.hour;
+                if (this.second < 10) {
+                    second = '0'+ this.second;
+                }
+                if (this.minute< 10) {
+                    minute = '0'+ this.minute;
+                }
+                if (this.hour< 10) {
+                    hour = '0'+ this.hour;
+                }
+                this.showTime = hour+':'+minute+':'+second
+                // this.timer = setInterval(this.timerFun, 1000)
                 // return hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
             },
             changeTab(id) {
                 this.chooseId = id;
             },
-            goToPowerDetail() {
-                wx.navigateTo({
-                    url: "/pages/powerDetail/main"
-                });
-            }
         }
     };
 </script>
