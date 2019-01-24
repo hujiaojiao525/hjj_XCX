@@ -146,8 +146,8 @@
                 }
             },
             cancel() {
-                wx.navigateTo({
-                    url: '/pages/map/main'
+                wx.navigateBack({
+                    delta: 1
                 })
                 this.clearData();
             },

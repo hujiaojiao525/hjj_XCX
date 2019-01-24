@@ -97,7 +97,7 @@
                 });
             });
             this.getStorage();
-            this.listRequest();
+            // this.listRequest();
             if (!this.latitude) {
                 this.currentPos()
             }
@@ -153,11 +153,6 @@
                             })
                             me.requestData = arr;
                             console.log(me.requestData)
-                        } else {
-                            wx.showToast({
-                                title: '信息有误',
-                                icon: "none"
-                            });
                         }
                     },
                     fail() {
@@ -280,7 +275,9 @@
                     success: function(res) {
                         console.log(res);
                         // 通过获取的经纬度进行请求数据
-                        // 暂时注释掉
+                        if (!that.requestData) {
+                            return;
+                        }
                         let arr = that.setPos()
                         that.markers = arr;
                     }

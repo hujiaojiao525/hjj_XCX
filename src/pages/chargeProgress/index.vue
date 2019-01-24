@@ -201,7 +201,7 @@
                 this.payTimer = null;
                 this.isShowLayerPop = false;
                 // 回到首页
-                wx.redirectTo({
+                wx.reLaunch({
                     url: '/pages/map/main'
                 })
 
@@ -294,7 +294,7 @@
                                 self.isShowEndLayer = false;
                                 self.successText = '已充电量'+data.power+'kw,消费金额'+ data.amount/100+'元';
                                 self.isShowLayerPop = true;
-                                
+
                             } else {
                                 // wx.showToast({
                                 //     title: '结算失败',
