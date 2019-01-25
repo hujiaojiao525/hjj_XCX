@@ -152,7 +152,7 @@
                 this.clearData();
             },
             goIndex(latitude, longitude,province) {
-                wx.navigateTo({
+                wx.reLaunch({
                     url: '/pages/map/main?latitude='+latitude+'&longitude='+longitude+'&topValue='+province
                 })
                 this.storeFun(province);

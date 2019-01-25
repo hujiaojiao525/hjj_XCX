@@ -10,7 +10,7 @@
             <!-- <image class="listImg-img" @click="goToList" src="../../static/image/listImg.png"></image> -->
         </div>
         <div class="top-layer" v-show="editPop"></div>
-        <map
+        <map v-if="isShowMap"
             id="map"
             :markers="markers"
             scale="14"
@@ -56,6 +56,26 @@
 <script>
     import store from '../vuex/store';
 
+    const requestArr = [{
+        id: 1,
+        name: "",
+        latitude: "23.759173",
+        longitude: "114.687749",
+        iconPath: "/static/image/indexElseIcon.png",
+        width: 30,
+        height: 34,
+        zIndex: 1,
+        callout: {
+            content: '广东省河源市凯悦酒店背后停车场\n1.5元/度\n最近充电30分钟前',
+            fontSize: 14,
+            color: "#000000",
+            bgColor: "#ffffff",
+            padding: 8,
+            borderRadius: 4,
+            boxShadow: "4px 8px 16px 0 rgba(0)",
+            display: "BYCLICK"
+        }
+    }]
     export default {
         store,
         data() {
@@ -72,8 +92,9 @@
                 latitude: '',
                 longitude: '',
                 topValue: '输入目的地/电站名',
-                requestData: null,
+                requestData: requestArr,
                 userInfo: null,
+                isShowMap: false,
             };
         },
         onLoad(res) {
@@ -84,6 +105,24 @@
             if (res.topValue) {
                 this.topValue = res.topValue+'附近的充电站';
             }
+            this.isShowMap = true;
+        },
+        onUnload() {
+            this.editPop= false
+            this.focus= false
+            this.WinHeight= ""
+            this.markers= []
+            this.bottomHeight= ""
+            this.mapCtx= null
+            this.this. isShowToast= true
+            this.toastText= "位于居中位置"
+            this.obj= {}
+            this.latitude= ''
+            this.longitude= ''
+            this.topValue= '输入目的地/电站名'
+            this.requestData= requestArr
+            this.userInfo= null
+            this.isShowMap= false
         },
         onShow() {
             const self = this;
@@ -97,7 +136,7 @@
                 });
             });
             this.getStorage();
-            // this.listRequest();
+            this.listRequest();
             if (!this.latitude) {
                 this.currentPos()
             }
@@ -275,11 +314,13 @@
                     success: function(res) {
                         console.log(res);
                         // 通过获取的经纬度进行请求数据
-                        if (!that.requestData) {
-                            return;
-                        }
+                        // if (!that.requestData) {
+                        //     return;
+                        // }
+
                         let arr = that.setPos()
                         that.markers = arr;
+                        console.log(that.markers)
                     }
                 });
             },
