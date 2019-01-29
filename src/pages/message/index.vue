@@ -39,12 +39,12 @@
                 桩体编号：<span>请确保充电枪已插入电车</span>
             </p>
             <div class="choose-box">
-                <div :class="{chooseStatus: 1 === chooseId}" @click="chooseSearch(1, requestData.stake_1)">
+                <div :class="{chooseStatus: 1 === chooseId}" @click="chooseSearch(1, requestData.stake_1, requestData.stake_1_status)">
                     <span>A</span>
                     <span>{{stake_A}}</span>
                 </div>
 
-                <div :class="{chooseStatus: 2 === chooseId}" @click="chooseSearch(2, requestData.stake_2)">
+                <div :class="{chooseStatus: 2 === chooseId}" @click="chooseSearch(2, requestData.stake_2, requestData.stake_2_status)">
                     <span>B</span>
                     <span>{{stake_B}}</span>
                 </div>
@@ -117,7 +117,11 @@
                 })
             },
             // 选择电桩
-            chooseSearch(id, no) {
+            chooseSearch(id, no, status) {
+                console.log('点击之后的状态值为===='+status)
+                if (Number(status) !== 0) {
+                    return;
+                }
                 this.chooseId = id;
                 this.stake_no = no;
             },
@@ -188,7 +192,7 @@
                     url: `${process.env.BASE_URL}/charge`,
                     data: {
                         qr_code: scanResult.replace(/\s/g,"")
-                        // qr_code: '0000000000000001'
+                        // qr_code: "10001_10000000001"
                     }, //传参
                     method: 'get',
                     header: header, // 设置请求的 header
@@ -198,6 +202,16 @@
                             self.stake_A = self.returnStatus(res.data.data.stake_1_status);
                             self.stake_B = self.returnStatus(res.data.data.stake_2_status);
                             self.stake_no = res.data.data.stake_1;
+
+                            console.log("状态值为"+res.data.data.stake_1_status)
+                            if (Number(res.data.data.stake_1_status) !== 0) {
+                                self.chooseId = '';
+                                if (Number(res.data.data.stake_2_status) === 0) {
+                                    self.chooseId = 2;
+                                } else {
+                                    self.chooseId = '';
+                                }
+                            }
                         } else {
                             wx.showToast({
                                 title: '信息有误',
@@ -244,6 +258,13 @@
                     wx.navigateTo({
                         url: '/pages/phoneLogin/main?goWhere=back'
                     })
+                    return;
+                }
+                if (!this.chooseId) {
+                    // wx.showToast({
+                    //     title: '不可充电',
+                    //     icon: "none"
+                    // });
                     return;
                 }
                 const me = this;
