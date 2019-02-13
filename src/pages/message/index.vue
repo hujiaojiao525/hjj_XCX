@@ -59,6 +59,12 @@
              @clickLeft="clickLeft"
              rightBtnText="去充值"
              leftBtnText="放弃"></pop>
+        
+        <pop text="登录过期，请重新登录"
+             :isShowLayerPop="isShowLayerLoginPop"
+             :oneBtn="true"
+             @clickOnly="clickOnly"
+             onlyBtnText="确定"></pop>
     </div>
 </template>
 <script>
@@ -78,6 +84,7 @@
                 userInfo: '',
                 moneyText: '',
                 isShowLayerPop: false,
+                isShowLayerLoginPop: false,
             };
         },
         components: {
@@ -89,6 +96,7 @@
         },
         onUnload() {
             this.isShowLayerPop = false;
+            this.isShowLayerLoginPop = false;
             this.requestData = null;
             this.chooseId = 1;
             this.stake_A = '';
@@ -99,14 +107,14 @@
         methods: {
             clickLeft() {
                 // 放弃  回到首页
-                wx.navigateTo({
+                wx.redirectTo({
                     url: '/pages/map/main'
                 })
                 this.isShowLayerPop = false;
             },
             clickRight() {
                 // 去充值
-                wx.navigateTo({
+                wx.redirectTo({
                     url: '/pages/recharge/main'
                 })
                 this.isShowLayerPop = false;
@@ -114,6 +122,12 @@
             clickPhone() {
                  wx.makePhoneCall({
                     phoneNumber: '0762-3989588',
+                })
+            },
+            clickOnly() {
+                wx.removeStorageSync('userInfo');
+                wx.redirectTo({
+                    url: '/pages/phoneLogin/main?goWhere=jump&jumpPage=map'
                 })
             },
             // 选择电桩
@@ -302,6 +316,8 @@
                                     url: "/pages/chargeWait/main?reqData=" + JSON.stringify(reqData) + "&Authorization="+Authorization
                                 })
                             }
+                        } else if (res.data === "You have no access!"){
+                            me.isShowLayerLoginPop = true;
                         }
                     },
                     fail() {
